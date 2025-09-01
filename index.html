@@ -1,0 +1,4524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CORE - Center Of Real Essence">
+    <title>CORE</title>
+    
+    <!-- NAVBAR SCROLL SCRIPT - EARLY LOAD -->
+    <script>
+        console.log('EARLY NAVBAR SCRIPT LOADED');
+        
+        // Global navbar control
+        window.navbarController = {
+            navbar: null,
+            lastY: 0,
+            hidden: false,
+            
+            init: function() {
+                this.navbar = document.querySelector('.sci-fi-nav');
+                if (!this.navbar) {
+                    setTimeout(() => this.init(), 100);
+                    return;
+                }
+                
+                console.log('NAVBAR CONTROLLER: Ready');
+                this.navbar.style.transition = 'transform 0.4s ease-out';
+                
+                // Add scroll listener
+                const self = this; // Store reference to navbarController
+                const handleScroll = () => {
+                    const currentY = window.scrollY;
+                    console.log('SCROLL EVENT:', currentY, 'vs lastY:', self.lastY, 'hidden:', self.hidden);
+                    
+                    // Check scroll down (hide navbar)
+                    if (currentY > 100 && currentY > self.lastY && !self.hidden) {
+                        console.log('HIDING NAVBAR - scrolled down past 100px');
+                        self.hide();
+                    } 
+                    // Check scroll up (show navbar)
+                    else if (currentY < self.lastY && self.hidden) {
+                        console.log('SHOWING NAVBAR - scrolled up');
+                        self.show();
+                    }
+                    
+                    self.lastY = currentY;
+                };
+                
+                window.addEventListener('scroll', handleScroll);
+                console.log('NAVBAR CONTROLLER: Scroll listener active');
+                
+                // Add a simple test scroll listener
+                window.addEventListener('scroll', function() {
+                    console.log('SIMPLE SCROLL DETECTED:', window.scrollY);
+                });
+                
+                // Test scroll detection
+                let scrollTestCount = 0;
+                window.testScrollDetection = function() {
+                    scrollTestCount++;
+                    console.log('MANUAL SCROLL TEST #' + scrollTestCount + ' - Current Y:', window.scrollY);
+                    handleScroll(); // Manually trigger scroll handler
+                };
+                
+                // Test basic console functionality
+                console.log('TEST: Basic console log working');
+                
+                // Auto test scroll detection every 2 seconds
+                setInterval(() => {
+                    console.log('AUTO CHECK - scrollY:', window.scrollY, 'hidden:', self.hidden);
+                }, 2000);
+            },
+            
+            hide: function() {
+                if (this.navbar) {
+                    console.log('HIDING NAVBAR - applying transform');
+                    this.navbar.style.transition = 'transform 0.4s ease-out';
+                    this.navbar.style.transform = 'translateX(-50%) translateY(-60px) !important';
+                    this.hidden = true;
+                    console.log('NAVBAR HIDDEN - transform applied:', this.navbar.style.transform);
+                }
+            },
+            
+            show: function() {
+                if (this.navbar) {
+                    console.log('SHOWING NAVBAR - applying transform');
+                    this.navbar.style.transition = 'transform 0.4s ease-out';
+                    this.navbar.style.transform = 'translateX(-50%) translateY(0px) !important';
+                    this.hidden = false;
+                    console.log('NAVBAR SHOWN - transform applied:', this.navbar.style.transform);
+                }
+            },
+            
+            toggle: function() {
+                if (this.hidden) {
+                    this.show();
+                } else {
+                    this.hide();
+                }
+            }
+        };
+        
+        // Start when DOM ready - DISABLED to avoid conflict with slide-in
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM READY - Navbar controller will start after slide-in');
+            // navbarController will be started after slide-in animation completes
+        });
+        
+        // Global test function
+        window.testNavbar = function() {
+            window.navbarController.toggle();
+        };
+        
+        // Test hiding directly
+        window.testHide = function() {
+            console.log('MANUAL HIDE TEST');
+            window.navbarController.hide();
+        };
+        
+        // Test showing directly  
+        window.testShow = function() {
+            console.log('MANUAL SHOW TEST');
+            window.navbarController.show();
+        };
+        
+        // Add basic scroll test immediately
+        window.addEventListener('scroll', function() {
+            console.log('BASIC SCROLL TEST - Y position:', window.scrollY);
+        });
+        
+        // Also try document scroll
+        document.addEventListener('scroll', function() {
+            console.log('DOCUMENT SCROLL TEST - Y position:', window.scrollY);
+        });
+        
+        console.log('BASIC SCROLL LISTENER ADDED AT SCRIPT LOAD');
+        
+        // Old school scroll detection test
+        window.onscroll = function() {
+            console.log('ONSCROLL EVENT - Y position:', window.scrollY);
+        };
+        
+        // ===== PROSTY SYSTEM ANIMACJI Z DEBUG =====
+        function initScrollAnimations() {
+            console.log('🚀 SETTING UP SIMPLE ANIMATIONS...');
+            
+            // Poczekaj na załadowanie strony
+            setTimeout(() => {
+                // Znajdź wszystkie elementy do animacji
+                const elements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .scale-in');
+                console.log('🎯 Found elements to animate:', elements.length);
+                
+                // Pokaż które elementy znalazł
+                elements.forEach((el, i) => {
+                    console.log(`Element ${i}:`, el.className, el.tagName);
+                    // Dodaj border żeby zobaczyć gdzie są
+                    el.style.border = '1px solid rgba(0,255,0,0.3)';
+                });
+                
+                // Na początek ukryj wszystkie elementy
+                elements.forEach(el => {
+                    el.classList.add('hidden');
+                });
+                
+                // Funkcja sprawdzająca czy element jest widoczny
+                function isElementVisible(el) {
+                    const rect = el.getBoundingClientRect();
+                    const visible = rect.top < window.innerHeight - 100 && rect.bottom > 0;
+                    return visible;
+                }
+                
+                // Funkcja animująca elementy
+                function animateElements() {
+                    let animated = 0;
+                    elements.forEach(el => {
+                        if (isElementVisible(el)) {
+                            if (el.classList.contains('hidden')) {
+                                el.classList.remove('hidden');
+                                console.log('✨ Showing:', el.className);
+                                animated++;
+                            }
+                        } else {
+                            if (!el.classList.contains('hidden')) {
+                                el.classList.add('hidden');
+                                console.log('👻 Hiding:', el.className);
+                            }
+                        }
+                    });
+                    if (animated > 0) console.log(`🎉 Animated ${animated} elements`);
+                }
+                
+                // Uruchom animacje przy scroll z throttling
+                let scrollTimeout;
+                window.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(animateElements, 10);
+                });
+                
+                // Uruchom animacje od razu
+                setTimeout(animateElements, 100);
+                
+                console.log('✅ ANIMATIONS READY!');
+            }, 500);
+        }
+        
+        // Test funkcja - wywołaj w konsoli: testAnimations()
+        window.testAnimations = function() {
+            console.log('🧪 TESTING ANIMATIONS...');
+            const elements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .scale-in');
+            console.log('Testing with', elements.length, 'elements');
+            
+            elements.forEach((el, i) => {
+                setTimeout(() => {
+                    el.classList.toggle('hidden');
+                    console.log(`Test ${i}: toggled`, el.className, 'hidden:', el.classList.contains('hidden'));
+                }, i * 200);
+            });
+        };
+        
+        // Uruchom animacje
+        setTimeout(initScrollAnimations, 1000);
+        
+        console.log('🎬 ANIMATION SYSTEM LOADED');
+        };
+    </script>
+    
+    <style>
+        /* ===== SCROLL ANIMATIONS ===== */
+        
+        /* Proste, niezawodne animacje */
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease-out;
+        }
+        
+        .fade-in.hidden {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .slide-left {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.8s ease-out;
+        }
+        
+        .slide-left.hidden {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        
+        .slide-right {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.8s ease-out;
+        }
+        
+        .slide-right.hidden {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        
+        .scale-in {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.6s ease-out;
+        }
+        
+        .scale-in.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        
+        /* Opóźnienia dla efektu kaskadowego */
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+        .delay-5 { transition-delay: 0.5s; }
+        
+        /* Klasa dla elementów które mają być widoczne od razu */
+        .animate-on-load {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .animate-on-load.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* ===== PODSTAWOWE STYLE ===== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+        
+        html {
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        html, body {
+            height: 100%;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Hide scrollbar completely - TEMPORARILY DISABLED FOR TESTING */
+        /*
+        html, body {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            overflow-x: hidden;
+        }
+        
+        body::-webkit-scrollbar,
+        html::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        */
+        
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+        
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Sci-Fi Navigation Bar */
+        .sci-fi-nav {
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-60px); /* Start hidden above screen */
+            z-index: 100;
+            width: 60%;
+            max-width: 680px;
+            height: 32px; /* Zwiększona wysokość navbara o 15% */
+            pointer-events: none;
+            opacity: 1;
+            transition: transform 0.6s ease-out;
+            will-change: transform;
+        }
+        
+        .nav-panel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 10px 10px; /* Slightly increased for thicker panel */
+            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.1); /* Proportionally increased */
+            pointer-events: auto;
+        }
+        
+        .nav-content {
+            position: absolute;
+            top: 5px; /* Zwiększone proporcjonalnie o 15% */
+            left: 0;
+            width: 100%;
+            height: calc(100% - 5px); /* Dostosowanie wysokości */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            pointer-events: auto;
+        }
+        
+        .nav-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 0;
+        }
+        
+        .nav-link {
+            color: #000;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 4px 12px; /* Zwiększone proporcjonalnie o 15% */
+            flex: 1;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        
+        .nav-link:hover {
+            color: #333;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sci-fi-nav {
+                width: 80%;
+                height: 28px; /* Zwiększona proporcjonalnie o 15% */
+            }
+            .nav-content {
+                padding: 0 12px;
+                top: 4px; /* Zwiększone proporcjonalnie o 15% */
+                height: calc(100% - 4px);
+            }
+            .nav-link {
+                font-size: 8px;
+                font-weight: 400;
+                padding: 3px 7px; /* Zwiększony padding proporcjonalnie o 15% */
+                letter-spacing: 0.15em;
+            }
+        }
+
+        /* Animated Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200vh; /* Extended height for full coverage */
+            pointer-events: none;
+            z-index: 1; /* Very low z-index */
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 70%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 4px rgba(255,255,255,0.4),
+                0 0 8px rgba(255,255,255,0.2),
+                0 0 12px rgba(255,255,255,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.6;
+        }
+        
+        .star.large {
+            width: 4px;
+            height: 4px;
+            opacity: 0.8;
+            box-shadow: 
+                0 0 6px rgba(255,255,255,0.6),
+                0 0 12px rgba(255,255,255,0.3),
+                0 0 18px rgba(255,255,255,0.15);
+        }
+        
+        .star.small {
+            width: 2px;
+            height: 2px;
+            opacity: 0.5;
+        }
+        
+        .star.tiny {
+            width: 1px;
+            height: 1px;
+            opacity: 0.3;
+            box-shadow: 
+                0 0 1px rgba(255,255,255,0.4),
+                0 0 2px rgba(255,255,255,0.15);
+        }
+        
+        /* About Section */
+        .about-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .about-content {
+            max-width: 800px;
+            text-align: center;
+            color: #ffffff;
+            animation: fadeInUp 1.5s ease-out;
+        }
+        
+        .about-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 3rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+        
+        /* Uniwersalne linie rozdzielające dla wszystkich tytułów sekcji */
+        .about-title::after,
+        .stats-title::after,
+        .movement-title::after,
+        .howto-title::after,
+        .whale-title::after,
+        .art-title::after,
+        .roadmap-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(64, 120, 255, 0.3) 20%,
+                rgba(32, 80, 200, 0.6) 50%,
+                rgba(64, 120, 255, 0.3) 80%,
+                transparent 100%
+            );
+            box-shadow: 
+                0 0 10px rgba(64, 120, 255, 0.4),
+                0 0 20px rgba(32, 80, 200, 0.2);
+        }
+        
+        .about-description {
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            opacity: 0.8;
+            font-weight: 300;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 50px 15px;
+            }
+            
+            .about-description {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Live Stats Section */
+        .stats-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stats-content {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+        }
+        
+        .stats-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 3rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 280px;
+        }
+        
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            font-size: 1.6rem;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .icon-dollar::before {
+            content: '$';
+            font-weight: 300;
+            font-size: 1.8rem;
+        }
+        
+        .icon-chart::before {
+            content: '';
+            width: 20px;
+            height: 16px;
+            border-left: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            position: relative;
+        }
+        
+        .icon-chart::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 8px;
+            background: linear-gradient(45deg, transparent 40%, #ffffff 40%, #ffffff 60%, transparent 60%);
+        }
+        
+        .icon-volume::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: 
+                linear-gradient(#ffffff 0 0) 0 100%/3px 8px,
+                linear-gradient(#ffffff 0 0) 5px 100%/3px 12px,
+                linear-gradient(#ffffff 0 0) 10px 100%/3px 6px,
+                linear-gradient(#ffffff 0 0) 15px 100%/3px 14px;
+            background-repeat: no-repeat;
+        }
+        
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .stat-box:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+        
+        .stat-box:hover::before {
+            left: 100%;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        .stat-value {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .stat-change.positive {
+            color: #4ade80;
+        }
+        
+        .stat-change.negative {
+            color: #f87171;
+        }
+        
+        .stat-change.neutral {
+            color: #ffffff;
+            opacity: 0.6;
+        }
+        
+        .api-status {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s ease;
+        }
+        
+        .last-updated {
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            font-weight: 300;
+        }
+        
+        .refresh-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Responsive Stats */
+        @media (max-width: 768px) {
+            .stats-section {
+                padding: 50px 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stat-box {
+                padding: 2rem 1.5rem;
+                min-height: 240px;
+            }
+            
+            .stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* Join Movement Section */
+        .movement-section {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .movement-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        
+        .movement-subtitle {
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            font-weight: 300;
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+        
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .carousel-scroll {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2rem 1rem;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            min-height: 20rem;
+        }
+        
+        .profile-card {
+            flex-shrink: 0;
+            width: 14rem;
+            height: 18rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .profile-card.active {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.1),
+                0 0 40px rgba(255, 255, 255, 0.05);
+        }
+        
+        .profile-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 75%;
+            background: linear-gradient(135deg, #333, #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-card.active .card-image img {
+            transform: scale(1.05);
+        }
+        
+        .card-info {
+            padding: 1rem;
+            height: 25%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .card-name {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #ffffff;
+            margin-bottom: 0.2rem;
+        }
+        
+        .card-handle {
+            font-size: 0.8rem;
+            color: #ffffff;
+            opacity: 0.7;
+            text-decoration: none;
+        }
+        
+        .card-handle:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            /* Świecące kontury kosmiczne */
+            box-shadow: 
+                0 0 8px rgba(64, 120, 255, 0.2),
+                0 0 16px rgba(32, 80, 200, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .carousel-nav:hover {
+            background: rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.4);
+            /* Intensywne świecące kontury przy hover */
+            box-shadow: 
+                0 0 15px rgba(64, 120, 255, 0.4),
+                0 0 30px rgba(32, 80, 200, 0.3),
+                0 0 45px rgba(20, 50, 150, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .carousel-nav.prev {
+            left: 1rem;
+        }
+        
+        .carousel-nav.next {
+            right: 1rem;
+        }
+        
+        /* Responsive Movement */
+        @media (max-width: 768px) {
+            .movement-section {
+                padding: 50px 15px;
+            }
+            
+            .carousel-scroll {
+                gap: 1rem;
+                padding: 1.5rem 0.5rem;
+            }
+            
+            .profile-card {
+                width: 12rem;
+                height: 16rem;
+            }
+            
+            .profile-card.active {
+                transform: scale(1.05);
+            }
+            
+            .carousel-nav {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+        }
+        
+        /* How to Buy Section */
+        .howto-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .howto-content {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+        }
+        
+        .howto-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+        
+        .howto-subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .step-item {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .step-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .step-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .step-item:hover::before {
+            left: 100%;
+        }
+        
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: 100;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .step-title {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+        }
+        
+        .step-text {
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+        
+        .contract-info {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .contract-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .contract-info:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .contract-info:hover::before {
+            left: 100%;
+        }
+        
+        .contract-label {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-weight: 300;
+        }
+        
+        .contract-address {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+            color: #ffffff;
+            margin: 0;
+            word-break: break-all;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .copy-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+        
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive How to Buy */
+        @media (max-width: 1024px) {
+            .steps-grid {
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .howto-section {
+                padding: 50px 15px;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .step-item {
+                padding: 1.5rem;
+            }
+            
+            .contract-info {
+                padding: 1.5rem;
+            }
+            
+            .contract-address {
+                font-size: 0.7rem;
+            }
+        }
+        
+        /* Whale Club Section */
+        .whale-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .whale-content {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+        }
+        
+        .whale-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+        
+        .whale-subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+        
+        .whale-box {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .whale-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .whale-box:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .whale-box:hover::before {
+            left: 100%;
+        }
+        
+        .whale-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .whale-icon {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 100;
+        }
+        
+        .whale-info-text {
+            text-align: left;
+        }
+        
+        .whale-requirement-title {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 300;
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+        }
+        
+        .whale-amount {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 200;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 0.1em;
+        }
+        
+        .whale-description {
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+        
+        .wallet-status {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .wallet-status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .wallet-status:hover::before {
+            left: 100%;
+        }
+        
+        .status-text {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            font-weight: 300;
+        }
+        
+        .wallet-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .wallet-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            font-weight: 300;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .wallet-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .wallet-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-icon {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .telegram-invite {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .invite-text {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: rgba(34, 197, 94, 0.9);
+            margin: 0 0 1rem 0;
+            font-weight: 400;
+        }
+        
+        .telegram-btn {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+        
+        .telegram-btn:hover {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: rgba(34, 197, 94, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Whale Club */
+        @media (max-width: 768px) {
+            .whale-section {
+                padding: 50px 15px;
+            }
+            
+            .whale-box {
+                padding: 2rem;
+            }
+            
+            .whale-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .whale-info-text {
+                text-align: center;
+            }
+            
+            .wallet-buttons {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+        
+        /* Art Section */
+        .art-section {
+            min-height: 100vh;
+            background: transparent; /* Usunięte tło - niech gwiazdy świecą przez */
+            color: white;
+            padding: 100px 20px;
+            overflow-x: hidden; /* Tylko poziome overflow ukryte */
+            position: relative;
+            z-index: 2;
+        }
+        
+        .art-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .art-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            position: relative;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+        
+        .art-subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 60px;
+            font-weight: 300;
+        }
+        
+        /* Karuzela */
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .carousel-row {
+            display: flex;
+            gap: 30px;
+            animation: slideRight 120s linear infinite; /* Bardzo bardzo wolno */
+            width: fit-content;
+        }
+        
+        .carousel-row.reverse {
+            animation: slideLeft 150s linear infinite; /* Jeszcze wolniej */
+        }
+        
+        @keyframes slideRight {
+            0% {
+                transform: translateX(-30%);
+            }
+            100% {
+                transform: translateX(70%);
+            }
+        }
+        
+        @keyframes slideLeft {
+            0% {
+                transform: translateX(-30%);
+            }
+            100% {
+                transform: translateX(-130%);
+            }
+        }
+        
+        .art-item {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        
+        .art-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .art-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .art-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .art-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 30px 20px 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .art-item:hover .art-overlay {
+            transform: translateY(0);
+        }
+        
+        .art-overlay h3 {
+            font-size: 1.1rem;
+            margin: 0 0 5px 0;
+            color: white;
+        }
+        
+        .art-overlay p {
+            font-size: 0.9rem;
+            margin: 0;
+            color: #ccc;
+        }
+        
+        /* Karuzela - dwa rzędy z przeciwnymi animacjami */
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .carousel-row {
+            display: flex;
+            gap: 30px;
+            animation: slideRight 120s linear infinite;
+            width: fit-content;
+        }
+        
+        .carousel-row.reverse {
+            animation: slideLeft 150s linear infinite;
+        }
+        
+        @keyframes slideRight {
+            0% {
+                transform: translateX(-30%);
+            }
+            100% {
+                transform: translateX(70%);
+            }
+        }
+        
+        @keyframes slideLeft {
+            0% {
+                transform: translateX(-30%);
+            }
+            100% {
+                transform: translateX(-130%);
+            }
+        }
+        
+        .art-item {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        
+        .art-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .art-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .art-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .art-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 30px 20px 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .art-item:hover .art-overlay {
+            transform: translateY(0);
+        }
+        
+        .art-overlay h3 {
+            font-size: 1.1rem;
+            margin: 0 0 5px 0;
+            color: white;
+        }
+        
+        .art-overlay p {
+            font-size: 0.9rem;
+            margin: 0;
+            color: #ccc;
+        }
+        
+        .art-categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: all 0.4s ease;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .category-btn:hover::before {
+            left: 100%;
+        }
+        
+        .category-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+        
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .art-item {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            cursor: pointer;
+            aspect-ratio: 16/10;
+        }
+        
+        .art-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .art-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .art-item:hover::before {
+            left: 100%;
+        }
+        
+        .art-item img,
+        .art-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .art-item:hover img,
+        .art-item:hover video {
+            transform: scale(1.05);
+        }
+        
+        .art-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .art-item:hover .art-item-overlay {
+            transform: translateY(0);
+        }
+        
+        .art-item-title {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 0.05em;
+        }
+        
+        .art-item-type {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0.25rem 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Modal Styles */
+        .art-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+        }
+        
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90vw;
+            max-height: 90vh;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .modal-media img,
+        .modal-media video {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        
+        /* Responsive Art */
+        @media (max-width: 768px) {
+            .art-section {
+                padding: 50px 15px;
+            }
+            
+            .art-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            
+            .art-categories {
+                gap: 0.5rem;
+            }
+            
+            .category-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Roadmap Section */
+        .roadmap-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .roadmap-content {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+        }
+        
+        .roadmap-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+        
+        .roadmap-subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 4rem;
+            font-weight: 300;
+        }
+        
+        .roadmap-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            text-align: left;
+        }
+        
+        .phase-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            position: relative;
+        }
+        
+        .phase-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .phase-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 200;
+            color: #ffffff;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .phase-number::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .phase-item:hover .phase-number {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .phase-item:hover .phase-number::before {
+            left: 100%;
+        }
+        
+        .phase-line {
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            margin-top: 1rem;
+        }
+        
+        .phase-line.last {
+            display: none;
+        }
+        
+        .phase-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phase-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .phase-content:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .phase-content:hover::before {
+            left: 100%;
+        }
+        
+        .phase-title {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+        }
+        
+        .phase-description {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .phase-description p {
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            margin: 0;
+        }
+        
+        /* Responsive Roadmap */
+        @media (max-width: 768px) {
+            .roadmap-section {
+                padding: 50px 15px;
+            }
+            
+            .roadmap-timeline {
+                gap: 2rem;
+            }
+            
+            .phase-item {
+                gap: 1rem;
+            }
+            
+            .phase-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .phase-line {
+                height: 80px;
+            }
+            
+            .phase-content {
+                padding: 2rem;
+            }
+            
+            .roadmap-subtitle {
+                margin-bottom: 3rem;
+            }
+        }
+        
+        /* Footer Section */
+        .footer-section {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 20px 20px 20px;
+            position: relative;
+            z-index: 2;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #ffffff;
+        }
+        
+        .footer-main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-logo {
+            text-align: center;
+        }
+        
+        .footer-logo-img {
+            width: 80px;
+            height: auto;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            transition: all 0.4s ease;
+        }
+        
+        .footer-logo-img:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .footer-tagline {
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .footer-title {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            font-weight: 300;
+            color: #ffffff;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+            font-weight: 300;
+            transition: all 0.3s ease;
+            letter-spacing: 0.02em;
+        }
+        
+        .footer-link:hover {
+            color: #ffffff;
+            transform: translateX(5px);
+        }
+        
+        .footer-contract {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .contract-label-footer {
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-weight: 300;
+        }
+        
+        .contract-address-footer {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.7rem, 1.5vw, 0.75rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            word-break: break-all;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            line-height: 1.4;
+        }
+        
+        .copy-button-footer {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 300;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            align-self: flex-start;
+        }
+        
+        .copy-button-footer:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .footer-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            margin-bottom: 2rem;
+        }
+        
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-copyright {
+            font-size: clamp(0.8rem, 1.5vw, 0.85rem);
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            transform: translateY(-3px) scale(1.05);
+        }
+        
+        .social-link:hover::before {
+            left: 100%;
+        }
+        
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer-section {
+                padding: 40px 15px 15px 15px;
+            }
+            
+            .footer-main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .footer-column {
+                align-items: center;
+            }
+            
+            .footer-contract {
+                align-items: center;
+            }
+            
+            .footer-bottom-content {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+        }
+        
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            max-width: 100%;
+            background-color: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            cursor: none; /* Hide default cursor */
+            margin: 0;
+            padding: 0;
+            position: relative;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        .logo-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        .core-logo {
+            max-width: 300px;
+            width: 80vw;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .core-logo {
+                max-width: 250px;
+                width: 70vw;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .core-logo {
+                max-width: 200px;
+                width: 65vw;
+            }
+        }
+        
+        /* ===== LOADER STYLES ===== */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loader-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Ukryj główną stronę podczas loadera */
+        body.loading .sci-fi-nav,
+        body.loading .hero,
+        body.loading .about-section,
+        body.loading .stats-section,
+        body.loading .movement-section,
+        body.loading .how-to-section,
+        body.loading .whale-section,
+        body.loading .contract-section,
+        body.loading .footer {
+            display: none !important;
+        }
+
+        .loader-date-display {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 200;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        .loader-enter-button {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(20px);
+            
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 200;
+            cursor: pointer;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .loader-enter-button:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .loader-enter-button:active {
+            transform: translate(-50%, -50%) translateY(1px);
+        }
+
+        .loader-enter-button.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) translateY(0);
+        }
+
+        .loader-video-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-video-screen.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .loader-video-container {
+            position: relative;
+            width: 80%;
+            max-width: 900px;
+            aspect-ratio: 16/9;
+            border-radius: 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+        }
+
+        .loader-video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .loader-skip-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 200;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .loader-skip-button:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .loader-skip-button:active {
+            transform: translateY(1px);
+        }
+
+        .loader-split-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10001;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader-split-left, .loader-split-right {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: #000;
+            transition: transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .loader-split-left {
+            left: 0;
+            transform-origin: left;
+        }
+
+        .loader-split-right {
+            right: 0;
+            transform-origin: right;
+        }
+
+        .loader-split-left.open {
+            transform: translateX(-100%);
+        }
+
+        .loader-split-right.open {
+            transform: translateX(100%);
+        }
+
+        @media (max-width: 768px) {
+            .loader-date-display {
+                font-size: 1rem;
+                letter-spacing: 0.1em;
+            }
+            
+            .loader-video-container {
+                width: 95%;
+            }
+            
+            .loader-enter-button {
+                font-size: 0.8rem;
+                padding: 10px 20px;
+                letter-spacing: 0.15em;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- CORE Loader -->
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="loader-date-display" id="loaderDateDisplay">Aug 28, 2025</div>
+        <button class="loader-enter-button" id="loaderEnterButton">ENTER CORE</button>
+    </div>
+
+    <!-- Loader Video Screen -->
+    <div class="loader-video-screen" id="loaderVideoScreen">
+        <div class="loader-video-container">
+            <video id="loaderCoreVideo" preload="auto">
+                <source src="core_message2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <button class="loader-skip-button" id="loaderSkipButton">SKIP</button>
+        </div>
+    </div>
+
+    <!-- Loader Split Screen Transition -->
+    <div class="loader-split-screen" id="loaderSplitScreen">
+        <div class="loader-split-left"></div>
+        <div class="loader-split-right"></div>
+    </div>
+
+    <!-- Sci-Fi Navigation Bar -->
+    <nav class="sci-fi-nav">
+        <div class="nav-panel">
+            <div class="nav-content">
+                <div class="nav-section">
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#stats" class="nav-link">Stats</a>
+                    <a href="#movement" class="nav-link">Movement</a>
+                    <a href="#buy" class="nav-link">Buy</a>
+                    <a href="#whale" class="nav-link">Whale</a>
+                    <a href="#gallery" class="nav-link">Gallery</a>
+                    <a href="#roadmap" class="nav-link">Roadmap</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Animated Stars Background -->
+    <div class="stars-container" id="starsContainer"></div>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    
+    <div class="logo-container">
+        <img src="corelogo.svg" alt="CORE" class="core-logo">
+    </div>
+    
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="about-content">
+            <h2 class="about-title fade-in">About CORE</h2>
+            <p class="about-description fade-in delay-1">
+                Center Of Real Essence - Beyond market speculation, CORE represents identity, culture, and digital introspection. 
+                We are a lifestyle, a movement inspired by corecore aesthetics - embracing simplicity, infinity, and the melancholic beauty of Gen Z's digital existence.
+                
+                <br><br>
+                
+                Bridging art, fashion, and memes in the digital realm, CORE transcends traditional cryptocurrency boundaries. 
+                We embody the raw authenticity of internet culture while maintaining the sophisticated minimalism that defines 
+                our generation's relationship with technology and self-expression.
+                
+                <br><br>
+                
+                This is more than speculation - it's a reflection of who we are. A community united by shared aesthetic values, 
+                digital nativity, and the understanding that true value comes from authentic connection rather than artificial hype. 
+                CORE is the intersection of finance and philosophy, where every transaction carries the weight of cultural significance.
+            </p>
+        </div>
+    </section>
+    
+    <!-- Live Stats Section -->
+    <section class="stats-section" id="stats">
+        <div class="stats-content">
+            <h2 class="stats-title fade-in">Live Statistics</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box scale-in delay-1">
+                    <div class="stat-icon icon-dollar"></div>
+                    <div class="stat-label">Current Price</div>
+                    <div class="stat-value" id="price-value">Loading...</div>
+                    <div class="stat-change" id="price-change">
+                        <span>--</span>
+                    </div>
+                </div>
+                
+                <div class="stat-box scale-in delay-2">
+                    <div class="stat-icon icon-chart"></div>
+                    <div class="stat-label">Market Cap</div>
+                    <div class="stat-value" id="mcap-value">Loading...</div>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        <span class="api-status">Connecting...</span>
+                    </div>
+                </div>
+                
+                <div class="stat-box scale-in delay-3">
+                    <div class="stat-icon icon-volume"></div>
+                    <div class="stat-label">24H Volume</div>
+                    <div class="stat-value" id="volume-value">Loading...</div>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        <span class="api-status">Connecting...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="last-updated">
+                <span class="refresh-indicator"></span>
+                <span id="last-update">Initializing...</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Join The Movement Section -->
+    <section class="movement-section" id="movement">
+        <h2 class="movement-title fade-in">Join The Movement</h2>
+        <p class="movement-subtitle fade-in delay-1">Connect with the CORE community</p>
+        
+        <div class="carousel-container scale-in delay-2">
+            <button class="carousel-nav prev" id="prevCard" aria-label="Previous profile">‹</button>
+            
+            <div class="carousel-scroll" id="carouselContainer">
+                <!-- Profile cards will be generated by JavaScript -->
+            </div>
+            
+            <button class="carousel-nav next" id="nextCard" aria-label="Next profile">›</button>
+        </div>
+    </section>
+    
+    <!-- How to Buy Section -->
+    <section class="howto-section" id="howto">
+        <div class="howto-content">
+            <h2 class="howto-title fade-in">How to Buy CORE</h2>
+            <p class="howto-subtitle fade-in delay-1">Simple steps to join the movement</p>
+            
+            <div class="steps-grid">
+                <div class="step-item slide-left delay-1">
+                    <div class="step-number">01</div>
+                    <h3 class="step-title">Get SOL</h3>
+                    <p class="step-text">Purchase Solana (SOL) from any major exchange like Coinbase, Binance, or Kraken</p>
+                </div>
+                
+                <div class="step-item slide-right delay-2">
+                    <div class="step-number">02</div>
+                    <h3 class="step-title">Setup Wallet</h3>
+                    <p class="step-text">Download Phantom or Solflare wallet and transfer your SOL to your wallet</p>
+                </div>
+                
+                <div class="step-item slide-left delay-3">
+                    <div class="step-number">03</div>
+                    <h3 class="step-title">Connect & Swap</h3>
+                    <p class="step-text">Visit Jupiter or Raydium, connect your wallet, and swap SOL for CORE</p>
+                </div>
+            </div>
+            
+            <div class="contract-info fade-in delay-4">
+                <p class="contract-label">Contract Address:</p>
+                <p class="contract-address">4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump</p>
+                <button class="copy-button" onclick="copyContract()">Copy</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Whale Club Section -->
+    <section class="whale-section" id="whale">
+        <div class="whale-content">
+            <h2 class="whale-title fade-in">Whale Club</h2>
+            <p class="whale-subtitle fade-in delay-1">Exclusive community for CORE whales</p>
+            
+            <div class="whale-box scale-in delay-2">
+                <div class="whale-header">
+                    <div class="whale-icon">◆</div>
+                    <div class="whale-info-text">
+                        <h3 class="whale-requirement-title">Minimum Requirement</h3>
+                        <p class="whale-amount">10,000,000 CORE</p>
+                    </div>
+                </div>
+                
+                <p class="whale-description">
+                    Connect your wallet to verify your holdings and gain access to our exclusive Whale Chat
+                </p>
+                
+                <div class="wallet-status" id="walletStatus">
+                    <p class="status-text">Connect your wallet to verify holdings</p>
+                </div>
+                
+                <div class="wallet-buttons">
+                    <button class="wallet-btn phantom-btn" onclick="connectPhantom()">
+                        <span class="btn-icon">◇</span>
+                        Connect Phantom
+                    </button>
+                    
+                    <button class="wallet-btn solflare-btn" onclick="connectSolflare()">
+                        <span class="btn-icon">◈</span>
+                        Connect Solflare
+                    </button>
+                </div>
+                
+                <div class="telegram-invite" id="telegramInvite" style="display: none;">
+                    <p class="invite-text">◆ Congratulations! You qualify for Whale Club</p>
+                    <button class="telegram-btn" onclick="joinTelegram()">
+                        Join Whale Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Art Section -->
+    <section class="art-section" id="art">
+        <div class="art-content">
+            <h2 class="art-title fade-in">CORE Art</h2>
+            <p class="art-subtitle fade-in delay-1">Visual aesthetics of the movement</p>
+            
+            <!-- Pierwszy rząd karuzeli - porusza się w prawo -->
+            <div class="carousel-container fade-in delay-2">
+                <div class="carousel-row" id="carousel-row-1">
+                    <!-- Duplikaty na początku dla pełnego zapełnienia -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_15-54-01.jpg" loading="lazy" alt="CORE Art 4">
+                        <div class="art-overlay">
+                            <h3>CORE Genesis</h3>
+                            <p>Digital Art Collection</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_01-47-44.jpg" loading="lazy" alt="CORE Art 5">
+                        <div class="art-overlay">
+                            <h3>CORE Vision</h3>
+                            <p>Future Concept Art</p>
+                        </div>
+                    </div>
+                    <!-- Oryginalne obrazki -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_05-08-27.jpg" loading="lazy" alt="CORE Art 1">
+                        <div class="art-overlay">
+                            <h3>CORE Origin</h3>
+                            <p>The Beginning</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_08-32-31.jpg" loading="lazy" alt="CORE Art 2">
+                        <div class="art-overlay">
+                            <h3>CORE Evolution</h3>
+                            <p>Digital Transformation</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_10-21-15.jpg" loading="lazy" alt="CORE Art 3">
+                        <div class="art-overlay">
+                            <h3>CORE Reality</h3>
+                            <p>Virtual Dimensions</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_15-54-01.jpg" loading="lazy" alt="CORE Art 4">
+                        <div class="art-overlay">
+                            <h3>CORE Genesis</h3>
+                            <p>Digital Art Collection</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_01-47-44.jpg" loading="lazy" alt="CORE Art 5">
+                        <div class="art-overlay">
+                            <h3>CORE Vision</h3>
+                            <p>Future Concept Art</p>
+                        </div>
+                    </div>
+                    <!-- Duplikaty dla płynnej animacji -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_05-08-27.jpg" loading="lazy" alt="CORE Art 1">
+                        <div class="art-overlay">
+                            <h3>CORE Origin</h3>
+                            <p>The Beginning</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_08-32-31.jpg" loading="lazy" alt="CORE Art 2">
+                        <div class="art-overlay">
+                            <h3>CORE Evolution</h3>
+                            <p>Digital Transformation</p>
+                        </div>
+                    </div>
+                    <!-- Dodatkowe duplikaty dla pełnego zapełnienia -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_10-21-15.jpg" loading="lazy" alt="CORE Art 3">
+                        <div class="art-overlay">
+                            <h3>CORE Reality</h3>
+                            <p>Virtual Dimensions</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-09_15-54-01.jpg" loading="lazy" alt="CORE Art 4">
+                        <div class="art-overlay">
+                            <h3>CORE Genesis</h3>
+                            <p>Digital Art Collection</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_01-47-44.jpg" loading="lazy" alt="CORE Art 5">
+                        <div class="art-overlay">
+                            <h3>CORE Vision</h3>
+                            <p>Future Concept Art</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Drugi rząd karuzeli - porusza się w lewo -->
+            <div class="carousel-container">
+                <div class="carousel-row reverse" id="carousel-row-2">
+                    <!-- Duplikaty na początku dla pełnego zapełnienia -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_09-20-57.jpg" loading="lazy" alt="CORE Art 9">
+                        <div class="art-overlay">
+                            <h3>CORE Matrix</h3>
+                            <p>Digital Nexus</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-11_02-26-03.jpg" loading="lazy" alt="CORE Art 10">
+                        <div class="art-overlay">
+                            <h3>CORE Infinity</h3>
+                            <p>Beyond Reality</p>
+                        </div>
+                    </div>
+                    <!-- Oryginalne obrazki -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_00-45-08.jpg" loading="lazy" alt="CORE Art 6">
+                        <div class="art-overlay">
+                            <h3>CORE Synthesis</h3>
+                            <p>Digital Fusion</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_01-04-14.jpg" loading="lazy" alt="CORE Art 7">
+                        <div class="art-overlay">
+                            <h3>CORE Transcendence</h3>
+                            <p>Higher Dimensions</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_04-09-16.jpg" loading="lazy" alt="CORE Art 8">
+                        <div class="art-overlay">
+                            <h3>CORE Metamorphosis</h3>
+                            <p>Digital Evolution</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_09-20-57.jpg" loading="lazy" alt="CORE Art 9">
+                        <div class="art-overlay">
+                            <h3>CORE Matrix</h3>
+                            <p>Digital Nexus</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-11_02-26-03.jpg" loading="lazy" alt="CORE Art 10">
+                        <div class="art-overlay">
+                            <h3>CORE Infinity</h3>
+                            <p>Beyond Reality</p>
+                        </div>
+                    </div>
+                    <!-- Duplikaty dla płynnej animacji -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_00-45-08.jpg" loading="lazy" alt="CORE Art 6">
+                        <div class="art-overlay">
+                            <h3>CORE Synthesis</h3>
+                            <p>Digital Fusion</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_01-04-14.jpg" loading="lazy" alt="CORE Art 7">
+                        <div class="art-overlay">
+                            <h3>CORE Transcendence</h3>
+                            <p>Higher Dimensions</p>
+                        </div>
+                    </div>
+                    <!-- Dodatkowe duplikaty dla pełnego zapełnienia -->
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_04-09-16.jpg" loading="lazy" alt="CORE Art 8">
+                        <div class="art-overlay">
+                            <h3>CORE Metamorphosis</h3>
+                            <p>Digital Evolution</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-10_09-20-57.jpg" loading="lazy" alt="CORE Art 9">
+                        <div class="art-overlay">
+                            <h3>CORE Matrix</h3>
+                            <p>Digital Nexus</p>
+                        </div>
+                    </div>
+                    <div class="art-item">
+                        <img src="images/photo_2025-08-11_02-26-03.jpg" loading="lazy" alt="CORE Art 10">
+                        <div class="art-overlay">
+                            <h3>CORE Infinity</h3>
+                            <p>Beyond Reality</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Roadmap Section -->
+    <section class="roadmap-section" id="roadmap">
+        <div class="roadmap-content">
+            <h2 class="roadmap-title fade-in">Roadmap</h2>
+            <p class="roadmap-subtitle fade-in delay-1">The path to becoming the standard</p>
+            
+            <div class="roadmap-timeline fade-in delay-2">
+                <div class="phase-item slide-right delay-1">
+                    <div class="phase-marker">
+                        <div class="phase-number">I</div>
+                        <div class="phase-line"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Singularity</h3>
+                        <div class="phase-description">
+                            <p>Core is born. The signal spreads.</p>
+                            <p>Mystic experts appear, drawn to the origin — calling others in.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="phase-item slide-left delay-2">
+                    <div class="phase-marker">
+                        <div class="phase-number">II</div>
+                        <div class="phase-line"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">Expansion & Alignment</h3>
+                        <div class="phase-description">
+                            <p>Form key alliances across platforms to reach those still searching for a token that mirrors the movement they love.</p>
+                            <p>Refine the brand to reflect Core's true essence.</p>
+                            <p>Begin locking in Core's identity and name rights across all fronts.</p>
+                            <p>The community continues to grow — with new members being drawn to Core daily.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="phase-item slide-right delay-3">
+                    <div class="phase-marker">
+                        <div class="phase-number">III</div>
+                        <div class="phase-line last"></div>
+                    </div>
+                    <div class="phase-content">
+                        <h3 class="phase-title">The Standard</h3>
+                        <div class="phase-description">
+                            <p>Core becomes synonymous with the trend itself.</p>
+                            <p>Wider access through major listings.</p>
+                            <p>Recognized by Murad's cult list.</p>
+                            <p>The name is protected — and the mission, undeniable.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-logo">
+                    <img src="corelogo.svg" alt="CORE" class="footer-logo-img">
+                    <p class="footer-tagline">Center Of Real Essence</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4 class="footer-title">Community</h4>
+                        <a href="#" class="footer-link">Telegram</a>
+                        <a href="#" class="footer-link">Twitter</a>
+                        <a href="#" class="footer-link">Discord</a>
+                        <a href="#whale" class="footer-link">Whale Club</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-title">Resources</h4>
+                        <a href="#howto" class="footer-link">How to Buy</a>
+                        <a href="#stats" class="footer-link">Live Stats</a>
+                        <a href="#art" class="footer-link">Art Gallery</a>
+                        <a href="#roadmap" class="footer-link">Roadmap</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-title">Contract</h4>
+                        <div class="footer-contract">
+                            <p class="contract-label-footer">Address:</p>
+                            <p class="contract-address-footer">4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump</p>
+                            <button class="copy-button-footer" onclick="copyContract()">◆ Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-divider"></div>
+                <div class="footer-bottom-content">
+                    <p class="footer-copyright">© 2025 CORE. All rights reserved.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link">◇</a>
+                        <a href="#" class="social-link">◈</a>
+                        <a href="#" class="social-link">◆</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        console.log('SCRIPT TAG LOADED - IMMEDIATE TEST');
+        
+        // Test console immediately
+        setTimeout(() => {
+            console.log('TIMEOUT TEST AFTER 1 SECOND');
+        }, 1000);
+        
+        // IMMEDIATE navbar animation setup
+        setTimeout(() => {
+            const immediateNav = document.querySelector('.sci-fi-nav');
+            if (immediateNav) {
+                console.log('IMMEDIATE: Navbar found, starting slide-in animation');
+                // Navbar starts hidden (from CSS), now animate it sliding down
+                immediateNav.style.transition = 'transform 0.8s ease-out';
+                immediateNav.style.transform = 'translateX(-50%) translateY(0px)';
+                console.log('NAVBAR SLIDE-IN ANIMATION STARTED');
+                
+                // After slide-in, enable scroll hiding
+                setTimeout(() => {
+                    console.log('ATTEMPTING TO START NAVBAR CONTROLLER...');
+                    if (window.navbarController) {
+                        console.log('navbarController exists, calling init()...');
+                        window.navbarController.init();
+                        console.log('NAVBAR CONTROLLER ACTIVATED AFTER SLIDE-IN');
+                        
+                        // Test if controller is working
+                        setTimeout(() => {
+                            console.log('TESTING CONTROLLER - navbar found:', !!window.navbarController.navbar);
+                            console.log('TESTING CONTROLLER - hidden state:', window.navbarController.hidden);
+                        }, 500);
+                    } else {
+                        console.log('ERROR: navbarController not found!');
+                    }
+                }, 1000); // Wait for slide-in to complete
+            }
+        }, 300); // Small delay for dramatic effect
+        
+        // Test navbar when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM READY - Navbar slide-in should be active');
+            const nav = document.querySelector('.sci-fi-nav');
+            console.log('Navbar in DOM?', !!nav, nav);
+            
+            if (nav) {
+                console.log('NAVBAR FOUND IN DOM - Animation should be running');
+                // Don't interfere with slide-in animation
+            } else {
+                console.log('NAVBAR NOT FOUND IN DOM');
+                const allNavs = document.querySelectorAll('nav');
+                console.log('All nav elements:', allNavs);
+            }
+        });
+        // Force scroll to top immediately
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+        
+        // Global mouse tracking variables
+        let starsMouseX = 0;
+        let starsMouseY = 0;
+        let lastStarsUpdate = 0;
+        let isScrolling = false;
+        let scrollTimeout;
+        
+        // Combined cursor and stars mouse tracking
+        const cursor = document.querySelector('.custom-cursor');
+        const logo = document.querySelector('.core-logo');
+        
+        // Initialize cursor position
+        cursor.style.left = '50%';
+        cursor.style.top = '50%';
+        cursor.style.opacity = '0';
+        
+        document.addEventListener('mousemove', (e) => {
+            // Update cursor position immediately and make visible
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.style.opacity = '1';
+            
+            // Update stars position with throttling
+            const now = Date.now();
+            if (now - lastStarsUpdate > 8) { // ~120fps throttle for smoother movement
+                starsMouseX = e.clientX;
+                starsMouseY = e.clientY;
+                lastStarsUpdate = now;
+            }
+        });
+        
+        // Hover effect on logo
+        logo.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+        });
+        
+        logo.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+        });
+        
+        // Hide cursor when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+        });
+        
+        // Show cursor and hide default cursor when mouse enters
+        document.addEventListener('mouseenter', () => {
+            document.body.style.cursor = 'none';
+            cursor.style.opacity = '1';
+        });
+
+        // Animated Stars System
+        class StarsSystem {
+            constructor() {
+                this.container = document.getElementById('starsContainer');
+                this.stars = [];
+                this.numStars = 300; // Dużo więcej gwiazd dla pięknego efektu
+                this.scrollY = 0;
+                
+                this.init();
+                this.bindEvents();
+                this.animate();
+            }
+            
+            init() {
+                // Create stars with better initial distribution
+                const viewportHeight = window.innerHeight;
+                const totalHeight = Math.max(document.body.scrollHeight, viewportHeight * 3);
+                
+                // Ensure good coverage in first viewport
+                const starsInViewport = Math.floor(this.numStars * 0.4); // 40% in first screen
+                
+                for (let i = 0; i < this.numStars; i++) {
+                    this.createStar(i, starsInViewport, viewportHeight, totalHeight);
+                }
+            }
+            
+            createStar(index, starsInViewport, viewportHeight, totalHeight) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random size variation - even more small/tiny stars for distant effect
+                const size = Math.random();
+                if (size > 0.95) {
+                    star.classList.add('large');
+                } else if (size > 0.3) {
+                    star.classList.add('small');
+                } else {
+                    star.classList.add('tiny');
+                }
+                
+                // Better position distribution - ensure good coverage in viewport
+                const x = Math.random() * window.innerWidth;
+                let y;
+                
+                if (index < starsInViewport) {
+                    // First 40% of stars in viewport area for immediate visibility
+                    y = Math.random() * viewportHeight;
+                } else {
+                    // Remaining stars distributed across full height
+                    y = viewportHeight + Math.random() * (totalHeight - viewportHeight);
+                }
+                
+                star.style.left = x + 'px';
+                star.style.top = y + 'px';
+                
+                // Store original position and properties
+                star.originalX = x;
+                star.originalY = y;
+                star.currentX = x;
+                star.currentY = y;
+                star.offsetX = 0;
+                star.offsetY = 0;
+                star.parallaxFactor = 0.08 + Math.random() * 0.12; // Szybszy parallax 0.08-0.20
+                
+                this.container.appendChild(star);
+                this.stars.push(star);
+            }
+            
+            bindEvents() {
+                // Use multiple scroll detection methods like navbar
+                const updateScroll = () => {
+                    this.scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                    console.log('Stars scroll updated:', this.scrollY); // Debug log
+                };
+                
+                window.addEventListener('scroll', updateScroll);
+                document.addEventListener('scroll', updateScroll);
+                document.body.addEventListener('scroll', updateScroll);
+                
+                // Also update with polling as backup
+                setInterval(updateScroll, 50);
+                
+                window.addEventListener('resize', () => {
+                    this.handleResize();
+                });
+            }
+            
+            handleResize() {
+                const documentHeight = document.body.scrollHeight || window.innerHeight * 2;
+                
+                this.stars.forEach(star => {
+                    if (star.originalX > window.innerWidth) {
+                        star.originalX = Math.random() * window.innerWidth;
+                        star.currentX = star.originalX;
+                    }
+                    if (star.originalY > documentHeight) {
+                        star.originalY = Math.random() * documentHeight;
+                        star.currentY = star.originalY;
+                    }
+                });
+                
+                // Update container height
+                this.container.style.height = Math.max(documentHeight, window.innerHeight * 2) + 'px';
+            }
+            
+            animate() {
+                // Debug info (only log first star to avoid spam)
+                if (this.stars.length > 0) {
+                    const firstStar = this.stars[0];
+                    const testParallax = this.scrollY * firstStar.parallaxFactor;
+                    console.log('Animate debug - scrollY:', this.scrollY, 'parallax for first star:', testParallax);
+                }
+                
+                this.stars.forEach(star => {
+                    // Use throttled mouse position for stars
+                    const dx = starsMouseX - star.currentX;
+                    const dy = starsMouseY - star.currentY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const maxDistance = 150;
+                    
+                    // Mouse repulsion effect with smoother transitions
+                    if (distance < maxDistance) {
+                        const force = (maxDistance - distance) / maxDistance;
+                        const angle = Math.atan2(dy, dx);
+                        const pushDistance = force * 50; // Przywrócona pełna siła dla dynamicznego efektu
+                        
+                        const targetOffsetX = -Math.cos(angle) * pushDistance;
+                        const targetOffsetY = -Math.sin(angle) * pushDistance;
+                        
+                        // Smooth interpolation towards target - faster response
+                        star.offsetX += (targetOffsetX - star.offsetX) * 0.25; // Zwiększona responsywność
+                        star.offsetY += (targetOffsetY - star.offsetY) * 0.25;
+                    } else {
+                        star.offsetX *= 0.96; // Szybsze powracanie dla bardziej dynamicznego efektu
+                        star.offsetY *= 0.96;
+                    }
+                    
+                    // Apply parallax scrolling (opposite direction - gwiazdy w górę gdy scroll w dół)
+                    const parallaxOffset = this.scrollY * star.parallaxFactor;
+                    
+                    // Update position
+                    star.currentX = star.originalX + star.offsetX;
+                    star.currentY = star.originalY + star.offsetY - parallaxOffset; // Minus = przeciwny kierunek
+                    
+                    // Apply transform (gwiazdy idą w górę gdy przewijasz w dół)
+                    star.style.transform = `translate(${star.offsetX}px, ${star.offsetY - parallaxOffset}px)`;
+                    
+                    // Fade based on distance from mouse
+                    if (distance < maxDistance) {
+                        const opacity = 0.3 + (distance / maxDistance) * 0.7;
+                        star.style.opacity = opacity;
+                    } else {
+                        star.style.opacity = 1;
+                    }
+                });
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+        
+        // Initialize stars system when page loads
+        window.addEventListener('load', () => {
+            const starsSystem = new StarsSystem();
+            // Update stars coverage after DOM is fully loaded
+            setTimeout(() => {
+                starsSystem.handleResize();
+            }, 100);
+        });
+        
+        // Live Stats System
+        class LiveStats {
+            constructor() {
+                this.contractAddress = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
+                this.updateInterval = 30000; // 30 seconds
+                this.lastData = null;
+                this.retryCount = 0;
+                this.maxRetries = 3;
+                this.init();
+            }
+            
+            init() {
+                this.updateStats();
+                setInterval(() => {
+                    this.updateStats();
+                }, this.updateInterval);
+            }
+            
+            formatNumber(num) {
+                if (num >= 1e9) {
+                    return (num / 1e9).toFixed(2) + 'B';
+                } else if (num >= 1e6) {
+                    return (num / 1e6).toFixed(2) + 'M';
+                } else if (num >= 1e3) {
+                    return (num / 1e3).toFixed(2) + 'K';
+                } else {
+                    return num.toLocaleString();
+                }
+            }
+            
+            formatPrice(price) {
+                if (price < 0.001) {
+                    return price.toFixed(8);
+                } else if (price < 1) {
+                    return price.toFixed(6);
+                } else {
+                    return price.toFixed(4);
+                }
+            }
+            
+            calculateChange(current, previous) {
+                if (!previous || previous === 0) return 0;
+                return ((current - previous) / previous) * 100;
+            }
+            
+            async fetchTokenData() {
+                try {
+                    // Try multiple APIs for better reliability
+                    const apis = [
+                        // DexScreener API (primary)
+                        `https://api.dexscreener.com/latest/dex/tokens/${this.contractAddress}`,
+                        // Jupiter API (backup)
+                        `https://price.jup.ag/v4/price?ids=${this.contractAddress}`,
+                        // Birdeye API (backup)
+                        `https://public-api.birdeye.so/defi/token_overview?address=${this.contractAddress}`
+                    ];
+                    
+                    for (let i = 0; i < apis.length; i++) {
+                        try {
+                            const response = await this.fetchFromAPI(apis[i], i);
+                            if (response) {
+                                this.retryCount = 0; // Reset retry count on success
+                                return response;
+                            }
+                        } catch (error) {
+                            console.warn(`API ${i + 1} failed:`, error);
+                            continue;
+                        }
+                    }
+                    
+                    throw new Error('All APIs failed');
+                    
+                } catch (error) {
+                    console.error('Error fetching token data:', error);
+                    this.retryCount++;
+                    
+                    if (this.retryCount <= this.maxRetries) {
+                        console.log(`Retrying... (${this.retryCount}/${this.maxRetries})`);
+                        setTimeout(() => this.updateStats(), 5000); // Retry after 5 seconds
+                    } else {
+                        this.showErrorState();
+                    }
+                    return null;
+                }
+            }
+            
+            async fetchFromAPI(url, apiIndex) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                try {
+                    const response = await fetch(url, {
+                        signal: controller.signal,
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return this.parseAPIResponse(data, apiIndex);
+                    
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    throw error;
+                }
+            }
+            
+            parseAPIResponse(data, apiIndex) {
+                try {
+                    switch (apiIndex) {
+                        case 0: // DexScreener
+                            if (data.pairs && data.pairs.length > 0) {
+                                const pair = data.pairs[0];
+                                return {
+                                    price: parseFloat(pair.priceUsd || 0),
+                                    marketCap: parseFloat(pair.fdv || pair.marketCap || 0),
+                                    volume24h: parseFloat(pair.volume?.h24 || 0),
+                                    priceChange24h: parseFloat(pair.priceChange?.h24 || 0)
+                                };
+                            }
+                            break;
+                            
+                        case 1: // Jupiter
+                            if (data.data && data.data[this.contractAddress]) {
+                                const tokenData = data.data[this.contractAddress];
+                                return {
+                                    price: parseFloat(tokenData.price || 0),
+                                    marketCap: 0, // Jupiter doesn't provide market cap
+                                    volume24h: 0, // Jupiter doesn't provide volume
+                                    priceChange24h: 0 // Jupiter doesn't provide 24h change
+                                };
+                            }
+                            break;
+                            
+                        case 2: // Birdeye
+                            if (data.data) {
+                                return {
+                                    price: parseFloat(data.data.price || 0),
+                                    marketCap: parseFloat(data.data.mc || 0),
+                                    volume24h: parseFloat(data.data.v24hUSD || 0),
+                                    priceChange24h: parseFloat(data.data.price24hChangePercent || 0)
+                                };
+                            }
+                            break;
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Error parsing API response:', error);
+                    return null;
+                }
+            }
+            
+            async updateStats() {
+                try {
+                    const data = await this.fetchTokenData();
+                    
+                    if (data) {
+                        this.updateDisplay(data);
+                        this.lastData = data;
+                        this.showSuccessState();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error updating stats:', error);
+                }
+            }
+            
+            updateDisplay(data) {
+                // Update price
+                const priceElement = document.getElementById('price-value');
+                if (priceElement && data.price > 0) {
+                    priceElement.textContent = '$' + this.formatPrice(data.price);
+                }
+                
+                // Update market cap
+                const mcapElement = document.getElementById('mcap-value');
+                if (mcapElement && data.marketCap > 0) {
+                    mcapElement.textContent = '$' + this.formatNumber(data.marketCap);
+                }
+                
+                // Update volume
+                const volumeElement = document.getElementById('volume-value');
+                if (volumeElement && data.volume24h > 0) {
+                    volumeElement.textContent = '$' + this.formatNumber(data.volume24h);
+                }
+                
+                // Update 24h changes if available
+                if (data.priceChange24h !== undefined) {
+                    const priceChangeElement = document.getElementById('price-change');
+                    if (priceChangeElement) {
+                        this.updateChangeIndicator(priceChangeElement, data.priceChange24h);
+                    }
+                }
+                
+                // Update last updated time
+                const lastUpdateElement = document.getElementById('last-update');
+                if (lastUpdateElement) {
+                    lastUpdateElement.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                }
+            }
+            
+            updateChangeIndicator(element, change) {
+                const sign = change >= 0 ? '+' : '';
+                element.textContent = sign + change.toFixed(2) + '%';
+                
+                if (change > 0) {
+                    element.className = 'stat-change positive';
+                } else if (change < 0) {
+                    element.className = 'stat-change negative';
+                } else {
+                    element.className = 'stat-change neutral';
+                }
+            }
+            
+            showSuccessState() {
+                const statusElements = document.querySelectorAll('.api-status');
+                statusElements.forEach(el => {
+                    el.style.color = 'rgba(34, 197, 94, 0.8)';
+                    el.textContent = '● Live';
+                });
+            }
+            
+            showErrorState() {
+                const statusElements = document.querySelectorAll('.api-status');
+                statusElements.forEach(el => {
+                    el.style.color = 'rgba(239, 68, 68, 0.8)';
+                    el.textContent = '● Error';
+                });
+                
+                // Show fallback message
+                console.warn('Unable to fetch live data. Please check your connection.');
+            }
+        }
+        
+        // Initialize Live Stats when page loads
+        window.addEventListener('load', () => {
+            new LiveStats();
+        });
+        
+        // Join The Movement Carousel
+        class CoreCarousel {
+            constructor() {
+                this.container = document.getElementById('carouselContainer');
+                this.prevBtn = document.getElementById('prevCard');
+                this.nextBtn = document.getElementById('nextCard');
+                this.currentIndex = 0;
+                this.isAnimating = false;
+                
+                // Core community profiles
+                this.profiles = [
+                    { name: "Slingor", handle: "@slingor", image: "kols/slingor.jpg" },
+                    { name: "Shadow", handle: "@shadow", image: "kols/shadow.jpg" },
+                    { name: "Poe", handle: "@poe", image: "kols/poe.jpg" },
+                    { name: "Gake", handle: "@gake", image: "kols/gake.jpg" },
+                    { name: "Core Alpha", handle: "@corealpha", image: "kols/photo_2025-08-09_07-20-58.jpg" },
+                    { name: "Core Beta", handle: "@corebeta", image: "kols/photo_2025-08-09_07-20-57.jpg" },
+                    { name: "Core Gamma", handle: "@coregamma", image: "kols/photo_2025-08-09_07-20-57 (2).jpg" },
+                    { name: "Core Delta", handle: "@coredelta", image: "kols/photo_2025-08-09_07-20-56.jpg" }
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                this.createCards();
+                this.setupEvents();
+                this.setActiveCard(2); // Middle card active
+                this.startAutoPlay();
+            }
+            
+            createCards() {
+                this.container.innerHTML = '';
+                
+                // Show 5 cards at a time
+                for (let i = 0; i < 5; i++) {
+                    const profileIndex = (this.currentIndex + i) % this.profiles.length;
+                    const profile = this.profiles[profileIndex];
+                    const card = this.createCard(profile, i);
+                    this.container.appendChild(card);
+                }
+            }
+            
+            createCard(profile, position) {
+                const card = document.createElement('div');
+                card.className = `profile-card ${position === 2 ? 'active' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="card-image">
+                        <img src="${profile.image}" alt="${profile.name}" />
+                    </div>
+                    <div class="card-info">
+                        <div class="card-name">${profile.name}</div>
+                        <a href="https://twitter.com/${profile.handle.substring(1)}" 
+                           target="_blank" 
+                           class="card-handle">${profile.handle}</a>
+                    </div>
+                `;
+                
+                return card;
+            }
+            
+            setActiveCard(position) {
+                const cards = this.container.querySelectorAll('.profile-card');
+                cards.forEach((card, i) => {
+                    card.classList.toggle('active', i === position);
+                });
+            }
+            
+            smoothTransition(direction) {
+                if (this.isAnimating) return;
+                this.isAnimating = true;
+                
+                const cards = this.container.querySelectorAll('.profile-card');
+                
+                // Fade out content
+                cards.forEach(card => {
+                    const cardImage = card.querySelector('.card-image');
+                    const cardName = card.querySelector('.card-name');
+                    const cardHandle = card.querySelector('.card-handle');
+                    
+                    cardImage.style.transition = 'opacity 0.3s ease';
+                    cardName.style.transition = 'opacity 0.3s ease';
+                    cardHandle.style.transition = 'opacity 0.3s ease';
+                    
+                    cardImage.style.opacity = '0';
+                    cardName.style.opacity = '0';
+                    cardHandle.style.opacity = '0';
+                });
+                
+                // After fade out, update content
+                setTimeout(() => {
+                    // Update current index
+                    if (direction === 'next') {
+                        this.currentIndex = (this.currentIndex + 1) % this.profiles.length;
+                    } else {
+                        this.currentIndex = (this.currentIndex - 1 + this.profiles.length) % this.profiles.length;
+                    }
+                    
+                    // Update each card's content
+                    cards.forEach((card, i) => {
+                        const profileIndex = (this.currentIndex + i) % this.profiles.length;
+                        const profile = this.profiles[profileIndex];
+                        
+                        const cardImage = card.querySelector('.card-image');
+                        const cardName = card.querySelector('.card-name');
+                        const cardHandle = card.querySelector('.card-handle');
+                        
+                        // Update content
+                        const img = cardImage.querySelector('img');
+                        if (img) {
+                            img.src = profile.image;
+                            img.alt = profile.name;
+                        }
+                        cardName.textContent = profile.name;
+                        cardHandle.textContent = profile.handle;
+                        cardHandle.href = `https://twitter.com/${profile.handle.substring(1)}`;
+                        
+                        // Update active state
+                        card.classList.toggle('active', i === 2);
+                    });
+                    
+                    // Fade in new content
+                    setTimeout(() => {
+                        cards.forEach(card => {
+                            const cardImage = card.querySelector('.card-image');
+                            const cardName = card.querySelector('.card-name');
+                            const cardHandle = card.querySelector('.card-handle');
+                            
+                            cardImage.style.opacity = '1';
+                            cardName.style.opacity = '1';
+                            cardHandle.style.opacity = '1';
+                        });
+                        
+                        // Clean up transitions
+                        setTimeout(() => {
+                            cards.forEach(card => {
+                                const cardImage = card.querySelector('.card-image');
+                                const cardName = card.querySelector('.card-name');
+                                const cardHandle = card.querySelector('.card-handle');
+                                
+                                cardImage.style.transition = '';
+                                cardName.style.transition = '';
+                                cardHandle.style.transition = '';
+                            });
+                            this.isAnimating = false;
+                        }, 300);
+                    }, 50);
+                }, 300);
+            }
+            
+            nextCard() {
+                this.smoothTransition('next');
+            }
+            
+            prevCard() {
+                this.smoothTransition('prev');
+            }
+            
+            setupEvents() {
+                this.nextBtn.addEventListener('click', () => {
+                    this.nextCard();
+                    this.pauseAutoPlay();
+                });
+                
+                this.prevBtn.addEventListener('click', () => {
+                    this.prevCard();
+                    this.pauseAutoPlay();
+                });
+            }
+            
+            startAutoPlay() {
+                this.autoPlayInterval = setInterval(() => {
+                    this.nextCard();
+                }, 4000);
+            }
+            
+            pauseAutoPlay() {
+                if (this.autoPlayInterval) {
+                    clearInterval(this.autoPlayInterval);
+                    this.autoPlayInterval = null;
+                }
+                
+                // Restart after 8 seconds of inactivity
+                setTimeout(() => {
+                    this.startAutoPlay();
+                }, 8000);
+            }
+        }
+        
+        // Copy contract address function
+        function copyContract() {
+            const contractAddress = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(contractAddress).then(() => {
+                    showCopyFeedback();
+                }).catch(err => {
+                    fallbackCopy(contractAddress);
+                });
+            } else {
+                fallbackCopy(contractAddress);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback();
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopyFeedback() {
+            const button = document.querySelector('.copy-button');
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.background = 'rgba(34, 197, 94, 0.2)';
+            button.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = 'rgba(255, 255, 255, 0.1)';
+                button.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }, 2000);
+        }
+        
+        // Whale Club Wallet Verification
+        let walletConnected = false;
+        const CORE_TOKEN_ADDRESS = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
+        const WHALE_THRESHOLD = 10000000; // 10M CORE tokens
+        
+        async function connectPhantom() {
+            try {
+                if (!window.solana || !window.solana.isPhantom) {
+                    updateStatus('Phantom wallet not detected. Please install Phantom wallet.', 'error');
+                    return;
+                }
+                
+                updateStatus('Connecting to Phantom...', 'loading');
+                
+                const response = await window.solana.connect();
+                const publicKey = response.publicKey.toString();
+                
+                await verifyTokenBalance(publicKey, 'Phantom');
+                
+            } catch (error) {
+                console.error('Phantom connection error:', error);
+                updateStatus('Failed to connect to Phantom wallet.', 'error');
+            }
+        }
+        
+        async function connectSolflare() {
+            try {
+                if (!window.solflare || !window.solflare.isSolflare) {
+                    updateStatus('Solflare wallet not detected. Please install Solflare wallet.', 'error');
+                    return;
+                }
+                
+                updateStatus('Connecting to Solflare...', 'loading');
+                
+                const response = await window.solflare.connect();
+                const publicKey = response.publicKey.toString();
+                
+                await verifyTokenBalance(publicKey, 'Solflare');
+                
+            } catch (error) {
+                console.error('Solflare connection error:', error);
+                updateStatus('Failed to connect to Solflare wallet.', 'error');
+            }
+        }
+        
+        async function verifyTokenBalance(publicKey, walletName) {
+            try {
+                updateStatus('Verifying CORE token balance...', 'loading');
+                
+                // Note: This is a mock verification for demo purposes
+                // In production, you would need to:
+                // 1. Query Solana RPC for token accounts
+                // 2. Check CORE token balance using the contract address
+                // 3. Verify the balance meets the whale threshold
+                
+                // Mock verification (remove in production)
+                setTimeout(() => {
+                    // Simulate random verification result for demo
+                    const isWhale = Math.random() > 0.5; // 50% chance for demo
+                    
+                    if (isWhale) {
+                        updateStatus(`✅ Wallet verified! You hold ${WHALE_THRESHOLD.toLocaleString()}+ CORE tokens.`, 'success');
+                        showTelegramInvite();
+                    } else {
+                        updateStatus(`❌ Insufficient CORE tokens. You need ${WHALE_THRESHOLD.toLocaleString()} CORE to join Whale Club.`, 'error');
+                    }
+                }, 2000);
+                
+                walletConnected = true;
+                
+            } catch (error) {
+                console.error('Balance verification error:', error);
+                updateStatus('Failed to verify token balance. Please try again.', 'error');
+            }
+        }
+        
+        function updateStatus(message, type) {
+            const statusElement = document.getElementById('walletStatus');
+            const statusText = statusElement.querySelector('.status-text');
+            
+            statusText.textContent = message;
+            
+            // Reset classes
+            statusElement.className = 'wallet-status';
+            
+            // Add type-specific styling
+            if (type === 'success') {
+                statusElement.style.background = 'rgba(34, 197, 94, 0.1)';
+                statusElement.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                statusText.style.color = 'rgba(34, 197, 94, 0.9)';
+            } else if (type === 'error') {
+                statusElement.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusElement.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                statusText.style.color = 'rgba(239, 68, 68, 0.9)';
+            } else if (type === 'loading') {
+                statusElement.style.background = 'rgba(59, 130, 246, 0.1)';
+                statusElement.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+                statusText.style.color = 'rgba(59, 130, 246, 0.9)';
+            } else {
+                statusElement.style.background = 'rgba(0, 0, 0, 0.3)';
+                statusElement.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                statusText.style.color = 'rgba(255, 255, 255, 0.8)';
+            }
+        }
+        
+        function showTelegramInvite() {
+            const inviteElement = document.getElementById('telegramInvite');
+            inviteElement.style.display = 'block';
+            
+            // Add fade-in animation
+            inviteElement.style.opacity = '0';
+            inviteElement.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                inviteElement.style.transition = 'all 0.5s ease';
+                inviteElement.style.opacity = '1';
+                inviteElement.style.transform = 'translateY(0)';
+            }, 100);
+        }
+        
+        function joinTelegram() {
+            // In production, this would be the actual Whale Chat Telegram invite link
+            const telegramLink = 'https://t.me/CoreWhaleClub'; // Replace with actual link
+            window.open(telegramLink, '_blank');
+        }
+        
+        // Art Gallery System
+        class ArtGallery {
+            constructor() {
+                this.container = document.getElementById('artGrid');
+                this.modal = document.getElementById('artModal');
+                this.modalMedia = document.getElementById('modalMedia');
+                this.currentFilter = 'all';
+                
+                // Art items data
+                this.artItems = [
+                    // Main videos
+                    { src: 'images/MAIN VIDEO OF BORN CORE.mp4', type: 'video', category: 'cinematic', title: 'Born CORE' },
+                    { src: 'images/core_monolith2.mp4', type: 'video', category: 'cinematic', title: 'Core Monolith' },
+                    { src: 'images/corecatwalk.mp4', type: 'video', category: 'videos', title: 'Core Catwalk' },
+                    
+                    // Cat videos
+                    { src: 'images/Cat_going_toward_202508102140_ozqty.mp4', type: 'video', category: 'videos', title: 'Cat Movement' },
+                    { src: 'images/Cat_puts_the_202508102117_2fk2e.mp4', type: 'video', category: 'videos', title: 'Cat Interaction' },
+                    { src: 'images/Cinematic_cat_rising_202508102109_rzbt2.mp4', type: 'video', category: 'cinematic', title: 'Cat Rising' },
+                    { src: 'images/Very_cinematic_like_202508152101_4q0i8.mp4', type: 'video', category: 'cinematic', title: 'Cinematic Vision' },
+                    { src: 'images/Very_cinematic_slow_202508152039_eu005.mp4', type: 'video', category: 'cinematic', title: 'Slow Motion' },
+                    
+                    // Background content
+                    { src: 'images/core background.jpg', type: 'image', category: 'photos', title: 'Core Background' },
+                    
+                    // Photo collection - sample (you can add more)
+                    { src: 'images/photo_2025-08-09_05-08-27.jpg', type: 'image', category: 'photos', title: 'Core Art 01' },
+                    { src: 'images/photo_2025-08-09_05-16-20.jpg', type: 'image', category: 'photos', title: 'Core Art 02' },
+                    { src: 'images/photo_2025-08-09_08-32-31.jpg', type: 'image', category: 'photos', title: 'Core Art 03' },
+                    { src: 'images/photo_2025-08-09_10-21-15.jpg', type: 'image', category: 'photos', title: 'Core Art 04' },
+                    { src: 'images/photo_2025-08-09_15-54-01.jpg', type: 'image', category: 'photos', title: 'Core Art 05' },
+                    { src: 'images/photo_2025-08-10_00-45-08.jpg', type: 'image', category: 'photos', title: 'Core Art 06' },
+                    { src: 'images/photo_2025-08-10_01-04-14.jpg', type: 'image', category: 'photos', title: 'Core Art 07' },
+                    { src: 'images/photo_2025-08-10_04-09-16.jpg', type: 'image', category: 'photos', title: 'Core Art 08' },
+                    { src: 'images/photo_2025-08-18_19-22-30.jpg', type: 'image', category: 'photos', title: 'Core Art 09' },
+                    { src: 'images/photo_2025-08-18_19-23-30.jpg', type: 'image', category: 'photos', title: 'Core Art 10' },
+                    { src: 'images/photo_2025-08-18_19-24-28.jpg', type: 'image', category: 'photos', title: 'Core Art 11' }
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                this.renderGrid();
+                this.setupFilterButtons();
+                this.setupModal();
+            }
+            
+            renderGrid(filter = 'all') {
+                this.container.innerHTML = '';
+                
+                const filteredItems = filter === 'all' 
+                    ? this.artItems 
+                    : this.artItems.filter(item => item.category === filter);
+                
+                filteredItems.forEach((item, index) => {
+                    const artItem = this.createArtItem(item, index);
+                    this.container.appendChild(artItem);
+                });
+            }
+            
+            createArtItem(item, index) {
+                const artItem = document.createElement('div');
+                artItem.className = 'art-item';
+                artItem.onclick = () => this.openModal(item);
+                
+                const mediaElement = item.type === 'video' 
+                    ? `<video src="${item.src}" muted loop autoplay playsinline></video>`
+                    : `<img src="${item.src}" alt="${item.title}" loading="lazy">`;
+                
+                artItem.innerHTML = `
+                    ${mediaElement}
+                    <div class="art-item-overlay">
+                        <p class="art-item-title">${item.title}</p>
+                        <p class="art-item-type">${item.type}</p>
+                    </div>
+                `;
+                
+                return artItem;
+            }
+            
+            setupFilterButtons() {
+                const buttons = document.querySelectorAll('.category-btn');
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        // Update active state
+                        buttons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        // Filter content
+                        const category = button.dataset.category;
+                        this.currentFilter = category;
+                        this.renderGrid(category);
+                    });
+                });
+            }
+            
+            setupModal() {
+                // Close modal when clicking outside
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal || e.target.classList.contains('modal-overlay')) {
+                        this.closeModal();
+                    }
+                });
+                
+                // Close modal with Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeModal();
+                    }
+                });
+            }
+            
+            openModal(item) {
+                const mediaElement = item.type === 'video' 
+                    ? `<video src="${item.src}" controls autoplay style="max-width: 100%; max-height: 90vh;">`
+                    : `<img src="${item.src}" alt="${item.title}" style="max-width: 100%; max-height: 90vh;">`;
+                
+                this.modalMedia.innerHTML = mediaElement;
+                this.modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeModal() {
+                this.modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                this.modalMedia.innerHTML = '';
+            }
+        }
+        
+        // Global function for modal close button
+        function closeModal() {
+            const gallery = window.artGallery;
+            if (gallery) {
+                gallery.closeModal();
+            }
+        }
+        
+        // Smooth scroll navigation
+        function initNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+            const navbar = document.querySelector('.sci-fi-nav');
+            
+            // Ensure navbar doesn't interfere with cursor during load
+            setTimeout(() => {
+                if (navbar) {
+                    navbar.style.pointerEvents = 'auto';
+                }
+            }, 2000); // After animation completes
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const offsetTop = targetElement.offsetTop - 100; // Account for nav height
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // NAVBAR SCROLL MOVED TO INLINE INITIALIZATION
+        // (Function moved to window.addEventListener('load') for better reliability)
+        
+        // Initialize carousel when page loads
+        window.addEventListener('load', () => {
+            console.log('PAGE LOADED - STARTING INITIALIZATION');
+            
+            // Ensure page starts at the very top for perfect logo centering
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            new CoreCarousel();
+            window.artGallery = new ArtGallery();
+            initNavigation();
+            
+            // OLD NAVBAR SCROLL DISABLED - MOVED TO HEAD
+            console.log('OLD navbar scroll logic disabled');
+            /*
+            const navbar = document.querySelector('.sci-fi-nav');
+            console.log('Navbar found:', !!navbar, navbar);
+            
+            if (navbar) {
+                let lastScrollY = window.scrollY || 0;
+                let isHidden = false;
+                
+                navbar.style.transition = 'transform 0.4s ease-out';
+                console.log('SUCCESS Navbar scroll logic initialized, starting scrollY:', lastScrollY);
+                
+                // SIMPLE scroll handler
+                function onScroll() {
+                    const currentY = window.scrollY;
+                    console.log('SCROLL EVENT:', currentY, 'Last:', lastScrollY, 'Hidden:', isHidden);
+                    
+                    if (currentY > 50 && currentY > lastScrollY && !isHidden) {
+                        navbar.style.transform = 'translateX(-50%) translateY(-60px)';
+                        isHidden = true;
+                        console.log('NAVBAR HIDDEN');
+                    } else if (currentY < lastScrollY && isHidden) {
+                        navbar.style.transform = 'translateX(-50%) translateY(0px)';
+                        isHidden = false;
+                        console.log('NAVBAR SHOWN');
+                    }
+                    lastScrollY = currentY;
+                }
+                
+                window.addEventListener('scroll', onScroll);
+                console.log('SCROLL LISTENER ADDED');
+                
+                // Manual test function
+                window.testNavbar = function() {
+                    console.log('MANUAL TEST TOGGLE');
+                    if (isHidden) {
+                        navbar.style.transform = 'translateX(-50%) translateY(0px)';
+                        isHidden = false;
+                    } else {
+                        navbar.style.transform = 'translateX(-50%) translateY(-60px)';
+                        isHidden = true;
+                    }
+                };
+                
+                setTimeout(() => {
+                    console.log('AUTO TEST IN 3 SECONDS');
+                    window.testNavbar();
+                }, 3000);
+                
+            } else {
+                console.log('ERROR NAVBAR NOT FOUND!');
+            }
+            */
+            // END OF DISABLED OLD NAVBAR LOGIC
+            
+            console.log('INITIALIZATION COMPLETE');
+            
+            // ===== PROSTY SYSTEM ANIMACJI Z DEBUG =====
+            function initScrollAnimations() {
+                console.log('🚀 SETTING UP SIMPLE ANIMATIONS...');
+                
+                // Poczekaj na załadowanie strony
+                setTimeout(() => {
+                    // Znajdź wszystkie elementy do animacji
+                    const elements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .scale-in');
+                    console.log('🎯 Found elements to animate:', elements.length);
+                    
+                    // Pokaż które elementy znalazł
+                    elements.forEach((el, i) => {
+                        console.log(`Element ${i}:`, el.className, el.tagName);
+                        // Dodaj border żeby zobaczyć gdzie są
+                        el.style.border = '1px solid rgba(0,255,0,0.3)';
+                    });
+                    
+                    // Na początek ukryj wszystkie elementy
+                    elements.forEach(el => {
+                        el.classList.add('hidden');
+                    });
+                    
+                    // Funkcja sprawdzająca czy element jest widoczny
+                    function isElementVisible(el) {
+                        const rect = el.getBoundingClientRect();
+                        const visible = rect.top < window.innerHeight - 100 && rect.bottom > 0;
+                        return visible;
+                    }
+                    
+                    // Funkcja animująca elementy
+                    function animateElements() {
+                        let animated = 0;
+                        elements.forEach(el => {
+                            if (isElementVisible(el)) {
+                                if (el.classList.contains('hidden')) {
+                                    el.classList.remove('hidden');
+                                    console.log('✨ Showing:', el.className);
+                                    animated++;
+                                }
+                            } else {
+                                if (!el.classList.contains('hidden')) {
+                                    el.classList.add('hidden');
+                                    console.log('👻 Hiding:', el.className);
+                                }
+                            }
+                        });
+                        if (animated > 0) console.log(`🎉 Animated ${animated} elements`);
+                    }
+                    
+                    // Uruchom animacje przy scroll z throttling
+                    let scrollTimeout;
+                    window.addEventListener('scroll', () => {
+                        clearTimeout(scrollTimeout);
+                        scrollTimeout = setTimeout(animateElements, 10);
+                    });
+                    
+                    // Uruchom animacje od razu
+                    setTimeout(animateElements, 100);
+                    
+                    console.log('✅ ANIMATIONS READY!');
+                }, 500);
+            }
+            
+            // Test funkcja - wywołaj w konsoli: testAnimations()
+            window.testAnimations = function() {
+                console.log('🧪 TESTING ANIMATIONS...');
+                const elements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .scale-in');
+                console.log('Testing with', elements.length, 'elements');
+                
+                elements.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.toggle('hidden');
+                        console.log(`Test ${i}: toggled`, el.className, 'hidden:', el.classList.contains('hidden'));
+                    }, i * 200);
+                });
+            };
+            
+            // Dodaj kontrolki do navbar żeby można było testować
+            window.addEventListener('load', () => {
+                const navbar = document.querySelector('.navbar-container');
+                if (navbar) {
+                    const testButton = document.createElement('button');
+                    testButton.textContent = '🧪 Test';
+                    testButton.style.cssText = 'margin-left: 10px; padding: 5px 10px; background: rgba(64,120,255,0.3); border: 1px solid rgba(64,120,255,0.8); color: white; border-radius: 5px; cursor: pointer;';
+                    testButton.onclick = window.testAnimations;
+                    navbar.appendChild(testButton);
+                }
+            });
+            
+            // Uruchom animacje
+            initScrollAnimations();
+        });
+        
+        // ===== LOADER INTEGRATION =====
+        function initLoader() {
+            console.log('🚀 CORE Loader initialized');
+            
+            // Elementy loadera
+            const loaderOverlay = document.getElementById('loaderOverlay');
+            const loaderDateDisplay = document.getElementById('loaderDateDisplay');
+            const loaderEnterButton = document.getElementById('loaderEnterButton');
+            const loaderVideoScreen = document.getElementById('loaderVideoScreen');
+            const loaderSplitScreen = document.getElementById('loaderSplitScreen');
+            const loaderCoreVideo = document.getElementById('loaderCoreVideo');
+            const loaderSkipButton = document.getElementById('loaderSkipButton');
+            
+            // Date countdown logic
+            let currentDate = new Date('2025-08-28');
+            const targetDate = new Date('2025-06-06');
+            
+            function formatDate(date) {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return `${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')}, ${date.getFullYear()}`;
+            }
+            
+            function updateDateDisplay() {
+                loaderDateDisplay.textContent = formatDate(currentDate);
+            }
+            
+            function startDateCountdown() {
+                console.log('🗓️ Starting date countdown...');
+                
+                const interval = setInterval(() => {
+                    currentDate.setDate(currentDate.getDate() - 1);
+                    updateDateDisplay();
+                    
+                    if (currentDate <= targetDate) {
+                        clearInterval(interval);
+                        console.log('🎯 Target date reached!');
+                        showEnterButton();
+                    }
+                }, 30);
+            }
+            
+            function showEnterButton() {
+                setTimeout(() => {
+                    loaderEnterButton.classList.add('show');
+                    console.log('🚀 Enter button shown');
+                }, 500);
+            }
+            
+            function showVideoScreen() {
+                console.log('🎬 Showing video screen...');
+                
+                // Natychmiastowe ukrycie date screen i pokazanie video
+                loaderOverlay.style.display = 'none';
+                loaderVideoScreen.classList.add('show');
+                
+                // Start video natychmiast
+                loaderCoreVideo.play().then(() => {
+                    console.log('▶️ Video started playing');
+                }).catch(err => {
+                    console.error('❌ Video play error:', err);
+                    setTimeout(openMainSite, 2000);
+                });
+            }
+            
+            function openMainSite() {
+                console.log('🌟 Opening main site with split transition...');
+                
+                // Ukryj video screen
+                loaderVideoScreen.classList.remove('show');
+                
+                // Prepare split screen
+                loaderSplitScreen.style.display = 'block';
+                loaderSplitScreen.style.opacity = '1';
+                
+                setTimeout(() => {
+                    const splitLeft = loaderSplitScreen.querySelector('.loader-split-left');
+                    const splitRight = loaderSplitScreen.querySelector('.loader-split-right');
+                    
+                    // Start split animation
+                    splitLeft.classList.add('open');
+                    splitRight.classList.add('open');
+                    
+                    // After split animation, show main site
+                    setTimeout(() => {
+                        // Remove loading class to show main content
+                        document.body.classList.remove('loading');
+                        
+                        // Hide all loader elements
+                        loaderOverlay.style.display = 'none';
+                        loaderVideoScreen.style.display = 'none';
+                        
+                        // Fade out split screen
+                        loaderSplitScreen.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            loaderSplitScreen.style.display = 'none';
+                            console.log('✅ Main site loaded!');
+                        }, 500);
+                        
+                    }, 1200); // Wait for split animation
+                }, 100);
+            }
+            
+            // Event listeners
+            loaderEnterButton.addEventListener('click', () => {
+                console.log('🎯 Enter button clicked');
+                showVideoScreen();
+            });
+            
+            loaderSkipButton.addEventListener('click', () => {
+                console.log('⏭️ Skip button clicked');
+                loaderCoreVideo.pause();
+                openMainSite();
+            });
+            
+            loaderCoreVideo.addEventListener('ended', () => {
+                console.log('🏁 Video ended');
+                setTimeout(openMainSite, 1000);
+            });
+            
+            loaderCoreVideo.addEventListener('error', (e) => {
+                console.error('❌ Video error:', e);
+                setTimeout(openMainSite, 2000);
+            });
+            
+            // Initialize
+            updateDateDisplay();
+            setTimeout(startDateCountdown, 1000);
+            
+            // Debug functions
+            window.skipLoaderToVideo = () => showEnterButton();
+            window.skipLoaderToMain = () => openMainSite();
+        }
+        
+        // Start loader when page loads
+        window.addEventListener('load', () => {
+            initLoader();
+        });
+    </script>
+</body>
+</html>
+
