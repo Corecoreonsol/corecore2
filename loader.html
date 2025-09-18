@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CORE - Loading...</title>
     <style>
+        /* ===== CORE COLOR PALETTE ===== */
+        :root {
+            --core-blue: #0099ff;
+            --core-blue-dark: #0066cc;
+            --core-cyan: #00ffff;
+            --core-dark-blue: #001122;
+            --core-navy: #000d1a;
+            --core-glow-blue: #0099ff80;
+            --core-glow-cyan: #00ffff40;
+            --core-text-blue: #66ccff;
+            --core-accent: #0080ff;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,8 +25,8 @@
         }
 
         body {
-            font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at center, var(--core-dark-blue) 0%, var(--core-navy) 50%, #000 100%);
             color: #fff;
             overflow: hidden;
             height: 100vh;
@@ -22,74 +35,314 @@
             justify-content: center;
         }
 
-        /* ===== DATE COUNTER SCREEN ===== */
-        .date-counter-screen {
+        /* ===== CORE LOADER SCREEN ===== */
+        .loader-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: radial-gradient(circle at center, var(--core-dark-blue) 0%, var(--core-navy) 50%, #000 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             z-index: 1000;
-            transition: opacity 0.8s ease;
+            gap: 0;
         }
 
-        .date-display {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            font-weight: 200;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-align: center;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        .core-logo {
+            width: clamp(200px, 20vw, 400px);
+            height: auto;
+            margin-bottom: 3rem;
+            filter: drop-shadow(0 0 20px var(--core-glow-blue)) 
+                   drop-shadow(0 0 40px var(--core-glow-cyan))
+                   drop-shadow(0 0 60px var(--core-blue));
+            animation: shimmer 3s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        @keyframes shimmer {
+            0% { 
+                filter: drop-shadow(0 0 20px var(--core-glow-blue)) 
+                       drop-shadow(0 0 40px var(--core-glow-cyan))
+                       drop-shadow(0 0 60px var(--core-blue));
+            }
+            50% { 
+                filter: drop-shadow(0 0 30px var(--core-cyan)) 
+                       drop-shadow(0 0 60px var(--core-blue))
+                       drop-shadow(0 0 90px var(--core-accent));
+                transform: scale(1.02);
+            }
+            100% { 
+                filter: drop-shadow(0 0 20px var(--core-glow-blue)) 
+                       drop-shadow(0 0 40px var(--core-glow-cyan))
+                       drop-shadow(0 0 60px var(--core-blue));
+            }
+        }
+
+        .loading-container {
+            position: relative;
+            width: 300px;
+            height: 2px;
+            background: rgba(0, 153, 255, 0.2);
+            border-radius: 1px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 10px var(--core-glow-blue),
+                       inset 0 0 5px var(--core-glow-cyan);
+        }
+
+        .loading-bar {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--core-cyan), 
+                var(--core-blue),
+                var(--core-cyan),
+                transparent
+            );
+            animation: loading 2s linear infinite;
+            box-shadow: 0 0 10px var(--core-cyan),
+                       0 0 20px var(--core-blue);
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .loading-text {
+            font-size: 0.8rem;
+            font-weight: 200;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--core-text-blue);
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+            text-shadow: 0 0 10px var(--core-glow-blue);
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                text-shadow: 0 0 10px var(--core-glow-blue);
+            }
+            50% { 
+                opacity: 1; 
+                text-shadow: 0 0 20px var(--core-cyan),
+                           0 0 30px var(--core-blue);
+            }
+        }
+
+        .core-dots {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--core-text-blue);
+            animation: dotPulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--core-glow-blue),
+                       0 0 16px var(--core-glow-cyan);
+        }
+
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.3s; }
+        .dot:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.3;
+                box-shadow: 0 0 8px var(--core-glow-blue);
+            }
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+                box-shadow: 0 0 16px var(--core-cyan),
+                           0 0 24px var(--core-blue);
+            }
         }
 
         .enter-button {
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease;
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%) translateY(20px);
+            position: relative;
+            margin-top: 2rem;
             
             padding: 12px 24px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 25, 40, 0.3);
+            border: 1px solid var(--core-glow-blue);
             border-radius: 0;
-            color: #fff;
+            color: var(--core-text-blue);
             font-size: 0.9rem;
             font-weight: 200;
             cursor: pointer;
             letter-spacing: 0.2em;
             text-transform: uppercase;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
+                       0 4px 16px rgba(0, 255, 255, 0.1),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            text-shadow: 0 0 10px var(--core-glow-blue);
             transition: all 0.3s ease;
         }
 
         .enter-button:hover {
-            border-color: rgba(255, 255, 255, 0.6);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--core-cyan);
+            background: rgba(0, 25, 40, 0.5);
+            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.25),
+                       0 8px 24px rgba(0, 255, 255, 0.15),
+                       0 0 32px var(--core-glow-blue),
+                       inset 0 1px 0 rgba(0, 255, 255, 0.3);
+            text-shadow: 0 0 20px var(--core-cyan);
+            transform: translateY(20px) scale(1.05);
         }
 
         .enter-button.show {
             opacity: 1;
-            transform: translate(-50%, -50%) translateY(0);
+            transform: translateY(0);
         }
+
+        /* ===== VIDEO SCREEN ===== */
+        .video-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, var(--core-dark-blue) 0%, var(--core-navy) 50%, #000 100%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+
+        .video-container {
+            position: relative;
+            width: 80%;
+            max-width: 900px;
+            aspect-ratio: 16/9;
+            border-radius: 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .skip-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 200;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .skip-button:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ===== SCREEN SPLIT TRANSITION ===== */
+        .split-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1002;
+            display: none;
+        }
+
+        .split-left, .split-right {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: #000;
+            transition: transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .split-left {
+            left: 0;
+            transform-origin: left;
+        }
+
+        .split-right {
+            right: 0;
+            transform-origin: right;
+        }
+
+        .split-left.open {
+            transform: translateX(-100%);
+        }
+
+        .split-right.open {
+            transform: translateX(100%);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .core-logo {
+                width: clamp(150px, 25vw, 250px);
+                margin-bottom: 1.5rem;
+            }
+            
+            .loading-container {
+                width: 250px;
+            }
+            
+            .video-container {
+                width: 95%;
+            }
+            
+            .enter-button {
+                font-size: 0.8rem;
+                padding: 10px 20px;
+                letter-spacing: 0.15em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Core Loader Screen -->
+    <div class="loader-screen" id="loaderScreen">
+        <img src="corelogo.svg" alt="CORE" class="core-logo">
+        <div class="loading-container">
+            <div class="loading-bar"></div>
+        </div>
+        <div class="loading-text">Initializing System</div>
+        <div class="core-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        <button class="enter-button" id="enterButton">ENTER CORE</button>
+    </div>
 
         /* ===== VIDEO SCREEN ===== */
         .video-screen {
@@ -202,17 +455,11 @@
     </style>
 </head>
 <body>
-    <!-- Date Counter Screen -->
-    <div class="date-counter-screen" id="dateScreen">
-        <div class="date-display" id="dateDisplay">Aug 28, 2025</div>
-        <button class="enter-button" id="enterButton">ENTER CORE</button>
-    </div>
-
     <!-- Video Screen -->
     <div class="video-screen" id="videoScreen">
         <div class="video-container">
             <video id="coreVideo" preload="auto">
-                <source src="core_message2.mp4" type="video/mp4">
+                <source src="loadervid.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <button class="skip-button" id="skipButton">SKIP</button>
@@ -226,59 +473,27 @@
     </div>
 
     <script>
-        // ===== DATE COUNTER LOGIC =====
-        let currentDate = new Date('2025-08-28');
-        const targetDate = new Date('2025-06-06');
-        const dateDisplay = document.getElementById('dateDisplay');
+        // ===== CORE LOADER LOGIC =====
         const enterButton = document.getElementById('enterButton');
-        const dateScreen = document.getElementById('dateScreen');
+        const loaderScreen = document.getElementById('loaderScreen');
         const videoScreen = document.getElementById('videoScreen');
         const splitScreen = document.getElementById('splitScreen');
         const coreVideo = document.getElementById('coreVideo');
         const skipButton = document.getElementById('skipButton');
 
-        function formatDate(date) {
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')}, ${date.getFullYear()}`;
-        }
-
-        function updateDateDisplay() {
-            dateDisplay.textContent = formatDate(currentDate);
-        }
-
-        function startDateCountdown() {
-            console.log('🗓️ Starting date countdown...');
-            
-            const interval = setInterval(() => {
-                // Cofaj datę o jeden dzień
-                currentDate.setDate(currentDate.getDate() - 1);
-                updateDateDisplay();
-                
-                console.log('📅 Current date:', formatDate(currentDate));
-                
-                // Sprawdź czy dotarliśmy do daty docelowej
-                if (currentDate <= targetDate) {
-                    clearInterval(interval);
-                    console.log('🎯 Target date reached!');
-                    showEnterButton();
-                }
-            }, 30); // Bardzo szybkie odliczanie - 30ms per dzień
-        }
-
         function showEnterButton() {
             setTimeout(() => {
                 enterButton.classList.add('show');
                 console.log('🚀 Enter button shown');
-            }, 500);
+            }, 3000); // Pokaż przycisk po 3 sekundach
         }
 
         function showVideoScreen() {
             console.log('🎬 Showing video screen...');
-            dateScreen.style.opacity = '0';
+            loaderScreen.style.opacity = '0';
             
             setTimeout(() => {
-                dateScreen.style.display = 'none';
+                loaderScreen.style.display = 'none';
                 videoScreen.style.display = 'flex';
                 
                 // Uruchom video
@@ -336,17 +551,16 @@
 
         // ===== INITIALIZATION =====
         window.addEventListener('load', () => {
-            console.log('🚀 Loader initialized');
-            updateDateDisplay();
+            console.log('🚀 CORE Loader initialized');
             
-            // Rozpocznij odliczanie po 1 sekundzie
-            setTimeout(startDateCountdown, 1000);
+            // Pokaż przycisk po 3 sekundach
+            showEnterButton();
         });
 
         // Debug funkcje
         window.skipToVideo = () => {
             console.log('🧪 DEBUG: Skip to video');
-            showEnterButton();
+            showVideoScreen();
         };
 
         window.skipToMain = () => {
