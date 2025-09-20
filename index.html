@@ -4374,12 +4374,16 @@
         (function initWhaleVerification(){
             const CORE_TOKEN_MINT = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
             const WHALE_THRESHOLD = 10_000_000; // 10M CORE
-            const RPC_ENDPOINT = 'https://api.mainnet-beta.solana.com';
+            const RPC_ENDPOINTS = [
+                'https://api.mainnet-beta.solana.com',
+                'https://rpc.ankr.com/solana'
+            ];
 
             const connectBtn = document.getElementById('phantomConnectBtn');
             const statusEl = document.getElementById('walletStatus');
             const statusText = statusEl ? statusEl.querySelector('.status-text') : null;
             const inviteBox = document.getElementById('telegramInvite');
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
             function setStatus(message, type){
                 if (!statusEl || !statusText) return;
@@ -4403,8 +4407,14 @@
                 }
             }
 
+            async function withTimeout(promise, ms){
+                let t;
+                const timeout = new Promise((_, rej) => t = setTimeout(() => rej(new Error('timeout')), ms));
+                try { return await Promise.race([promise, timeout]); }
+                finally { clearTimeout(t); }
+            }
+
             async function getCoreTokenBalance(ownerPubkey){
-                // Use getParsedTokenAccountsByOwner to fetch SPL token accounts and parse CORE mint
                 const body = {
                     jsonrpc: '2.0',
                     id: 1,
@@ -4415,51 +4425,104 @@
                         { commitment: 'confirmed' }
                     ]
                 };
-                const res = await fetch(RPC_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                const json = await res.json();
-                if(!json.result || !json.result.value) return 0;
-
-                let balance = 0;
-                for(const acc of json.result.value){
-                    const info = acc.account?.data?.parsed?.info;
-                    const mint = info?.mint;
-                    if(mint === CORE_TOKEN_MINT){
-                        const uiAmount = info?.tokenAmount?.uiAmount || 0;
-                        balance += uiAmount;
-                    }
+                let lastErr;
+                for(const url of RPC_ENDPOINTS){
+                    try{
+                        const res = await withTimeout(fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body)
+                        }), 12000);
+                        const json = await res.json();
+                        if(json.error) throw new Error(json.error?.message || 'RPC error');
+                        if(!json.result || !json.result.value) return 0;
+                        let balance = 0;
+                        for(const acc of json.result.value){
+                            const info = acc.account?.data?.parsed?.info;
+                            const mint = info?.mint;
+                            if(mint === CORE_TOKEN_MINT){
+                                const uiAmount = info?.tokenAmount?.uiAmount || 0;
+                                balance += uiAmount;
+                            }
+                        }
+                        return balance;
+                    }catch(e){ lastErr = e; }
                 }
-                return balance;
+                throw lastErr || new Error('All RPCs failed');
             }
 
             async function onConnectPhantom(){
                 try{
-                    const provider = window.solana;
+                    const provider = (window.phantom && window.phantom.solana) || window.solana;
                     if(!provider || !provider.isPhantom){
-                        setStatus('Phantom wallet not detected. Please install Phantom.', 'error');
+                        if(isMobile){
+                            setStatus('On mobile: open this site inside the Phantom app browser (Phantom > Browser > enter URL).', 'error');
+                        } else {
+                            setStatus('Phantom wallet not detected. Please install Phantom extension.', 'error');
+                        }
                         return;
                     }
                     setStatus('Connecting to Phantom...', 'loading');
-                    const resp = await provider.connect();
-                    const pubkey = resp.publicKey?.toString();
+
+                    let pubkey;
+                    try {
+                        const quick = await provider.connect({ onlyIfTrusted: true });
+                        pubkey = quick?.publicKey?.toString();
+                    } catch(_) { /* ignore */ }
+                    if(!pubkey){
+                        const resp = await provider.connect();
+                        pubkey = resp?.publicKey?.toString();
+                    }
                     if(!pubkey){
                         setStatus('Failed to read wallet public key.', 'error');
                         return;
                     }
                     setStatus('Verifying CORE token balance...', 'loading');
-                    const bal = await getCoreTokenBalance(pubkey);
-                    if (bal >= WHALE_THRESHOLD){
-                        setStatus(`✅ Wallet verified! You hold ${Math.floor(bal).toLocaleString()} CORE.`, 'success');
+                    let bal;
+                    try {
+                        bal = await getCoreTokenBalance(pubkey);
+                    } catch(err){
+                        console.error('RPC error while fetching balance', err);
+                        setStatus('Network error while verifying balance. Please try again in a moment.', 'error');
+                        if(inviteBox){ inviteBox.style.display = 'none'; }
+                        return;
+                    }
+                    const balInt = Math.floor(bal);
+                    if (balInt >= WHALE_THRESHOLD){
+                        setStatus(`✅ Wallet verified! You hold ${balInt.toLocaleString()} CORE.`, 'success');
                         if(inviteBox){ inviteBox.style.display = 'block'; }
                     } else {
-                        const short = Math.floor(bal).toLocaleString();
-                        const need = Math.max(0, Math.ceil(WHALE_THRESHOLD - bal)).toLocaleString();
-                        setStatus(`❌ You hold ${short} CORE. You need ${need} more CORE to join Whale Club.`, 'error');
+                        const need = Math.max(0, WHALE_THRESHOLD - balInt).toLocaleString();
+                        setStatus(`❌ You hold ${balInt.toLocaleString()} CORE. You need ${need} more CORE to join Whale Club.`, 'error');
                         if(inviteBox){ inviteBox.style.display = 'none'; }
                     }
+
+                    // Re-check on account change
+                    try {
+                        provider.on && provider.on('accountChanged', async (pk) => {
+                            if(!pk){
+                                setStatus('Wallet disconnected.', 'error');
+                                if(inviteBox){ inviteBox.style.display = 'none'; }
+                                return;
+                            }
+                            setStatus('Verifying CORE token balance...', 'loading');
+                            try {
+                                const reb = await getCoreTokenBalance(pk.toString());
+                                const rebInt = Math.floor(reb);
+                                if (rebInt >= WHALE_THRESHOLD){
+                                    setStatus(`✅ Wallet verified! You hold ${rebInt.toLocaleString()} CORE.`, 'success');
+                                    if(inviteBox){ inviteBox.style.display = 'block'; }
+                                } else {
+                                    const need2 = Math.max(0, WHALE_THRESHOLD - rebInt).toLocaleString();
+                                    setStatus(`❌ You hold ${rebInt.toLocaleString()} CORE. You need ${need2} more CORE to join Whale Club.`, 'error');
+                                    if(inviteBox){ inviteBox.style.display = 'none'; }
+                                }
+                            } catch(e){
+                                setStatus('Network error while verifying balance.', 'error');
+                                if(inviteBox){ inviteBox.style.display = 'none'; }
+                            }
+                        });
+                    } catch(_) { /* ignore */ }
                 }catch(err){
                     console.error('Phantom connect error', err);
                     setStatus('Failed to connect or verify. Please try again.', 'error');
