@@ -411,7 +411,17 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
+            gap: 10px;
+        }
+
+        /* Left side: site nav links */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 0;
+            flex: 1 1 auto;
+            min-width: 0;
         }
         
         .nav-link {
@@ -424,7 +434,7 @@
             transition: all 0.3s ease;
             position: relative;
             padding: 4px 12px; /* Zwiększone proporcjonalnie o 15% */
-            flex: 1;
+            flex: 1 1 0;
             text-align: center;
             display: flex;
             align-items: center;
@@ -458,6 +468,66 @@
                 padding: 3px 7px; /* Zwiększony padding proporcjonalnie o 15% */
                 letter-spacing: 0.15em;
             }
+            .nav-actions .nav-social {
+                display: none; /* Hide social shortcuts on small screens to keep nav compact */
+            }
+            .nav-cta {
+                font-size: 8px;
+                padding: 3px 8px;
+            }
+        }
+
+        /* Right side: social + buy buttons */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 0 auto;
+        }
+
+        .nav-actions .nav-link { /* Ensure header actions don't stretch */
+            flex: 0 0 auto;
+            padding: 4px 8px;
+        }
+
+        .nav-social {
+            color: var(--core-text-blue);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.25s ease;
+        }
+
+        .nav-social:hover {
+            color: var(--core-cyan);
+            background: rgba(0, 153, 255, 0.1);
+            box-shadow: 0 0 10px var(--core-glow-blue);
+            text-shadow: 0 0 10px var(--core-cyan);
+        }
+
+        .nav-cta {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(90deg, rgba(0,153,255,0.25) 0%, rgba(0,255,255,0.25) 100%);
+            border: 1px solid rgba(0,153,255,0.5);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px var(--core-glow-blue), 0 0 15px var(--core-glow-cyan);
+            transition: all 0.25s ease;
+        }
+
+        .nav-cta:hover {
+            background: linear-gradient(90deg, rgba(0,153,255,0.35) 0%, rgba(0,255,255,0.35) 100%);
+            border-color: rgba(0,153,255,0.7);
+            box-shadow: 0 0 14px var(--core-glow-blue), 0 0 22px var(--core-glow-cyan);
+            text-shadow: 0 0 10px var(--core-cyan);
         }
 
         /* Animated Stars Background */
@@ -1545,11 +1615,13 @@
             width: max-content;
             flex-wrap: nowrap;
             will-change: transform;
-            animation: marquee 60s linear infinite;
+            /* slowed slightly */
+            animation: marquee 75s linear infinite;
         }
 
         .carousel-row.reverse {
-            animation-duration: 75s;
+            /* keep reverse row a bit slower for contrast */
+            animation-duration: 95s;
             animation-direction: reverse;
         }
 
@@ -1612,11 +1684,13 @@
             width: max-content;
             flex-wrap: nowrap;
             will-change: transform;
-            animation: marquee 60s linear infinite;
+            /* slowed slightly */
+            animation: marquee 75s linear infinite;
         }
 
         .carousel-row.reverse { 
-            animation-duration: 75s;
+            /* keep reverse row a bit slower for contrast */
+            animation-duration: 95s;
             animation-direction: reverse;
         }
 
@@ -2952,13 +3026,21 @@
         <div class="nav-panel">
             <div class="nav-content">
                 <div class="nav-section">
-                    <a href="#about" class="nav-link">About</a>
-                    <a href="#stats" class="nav-link">Stats</a>
-                    <a href="#movement" class="nav-link">Movement</a>
-                    <a href="#buy" class="nav-link">Buy</a>
-                    <a href="#whale" class="nav-link">Whale</a>
-                    <a href="#gallery" class="nav-link">Gallery</a>
-                    <a href="#roadmap" class="nav-link">Roadmap</a>
+                    <div class="nav-links">
+                        <a href="#about" class="nav-link">About</a>
+                        <a href="#stats" class="nav-link">Stats</a>
+                        <a href="#movement" class="nav-link">Movement</a>
+                        <a href="#buy" class="nav-link">Buy</a>
+                        <a href="#whale" class="nav-link">Whale</a>
+                        <a href="#gallery" class="nav-link">Gallery</a>
+                        <a href="#roadmap" class="nav-link">Roadmap</a>
+                    </div>
+                    <div class="nav-actions">
+                        <a class="nav-social" href="https://x.com/" target="_blank" rel="noopener">Twitter</a>
+                        <a class="nav-social" href="https://tiktok.com/@" target="_blank" rel="noopener">TikTok</a>
+                        <a class="nav-social" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+                        <a class="nav-cta" href="#buy" rel="noopener">Buy Now</a>
+                    </div>
                 </div>
             </div>
         </div>
