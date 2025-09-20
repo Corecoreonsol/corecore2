@@ -346,7 +346,7 @@
             width: 20px;
             height: 20px;
             background-color: var(--core-text-blue);
-            border: 2px solid var(--core-cyan);
+            border: none;
             border-radius: 50%;
             pointer-events: none;
             z-index: 99999;
@@ -359,7 +359,7 @@
         .custom-cursor.hover {
             transform: translate(-50%, -50%) scale(1.5);
             background-color: var(--core-cyan);
-            border-color: var(--core-blue);
+            border: none;
             box-shadow: 0 0 20px var(--core-cyan),
                        0 0 35px var(--core-blue);
         }
@@ -390,7 +390,7 @@
             box-shadow: 0 3px 20px var(--core-glow-blue),
                        0 0 30px var(--core-glow-cyan); /* Proportionally increased */
             pointer-events: auto;
-            border: 1px solid var(--core-glow-blue);
+            border: none;
         }
         
         .nav-content {
@@ -465,8 +465,9 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 100vw; /* Full viewport width */
             height: 200vh; /* Extended height for full coverage */
+            min-width: 100%;
             pointer-events: none;
             z-index: 1; /* Very low z-index */
             overflow: hidden;
@@ -552,6 +553,7 @@
         .howto-title::after,
         .whale-title::after,
         .art-title::after,
+        .pfp-generator-title::after,
         .roadmap-title::after {
             content: '';
             position: absolute;
@@ -569,7 +571,7 @@
                 transparent 100%
             );
             box-shadow: 
-                0 0 10px rgba(64, 120, 255, 0.4),
+                0 0 10px rgba(64, 120, 255, 0.2),
                 0 0 20px rgba(32, 80, 200, 0.2);
         }
         
@@ -630,12 +632,13 @@
             margin-bottom: 3rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
             text-align: center;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
             padding-bottom: 1.5rem;
         }
         
@@ -648,7 +651,7 @@
         
         .stat-box {
             padding: 3rem 2rem;
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 8px;
             background: rgba(0, 25, 40, 0.3);
             backdrop-filter: blur(15px);
@@ -662,15 +665,15 @@
             justify-content: center;
             align-items: center;
             min-height: 280px;
-            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
-                       0 4px 16px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
         }
         
         .stat-icon {
             width: 56px;
             height: 56px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: none;
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -733,13 +736,13 @@
         }
         
         .stat-box:hover {
-            border-color: var(--core-cyan);
+            border: none;
             background: rgba(0, 25, 40, 0.5);
-            transform: translateY(-5px);
-            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.25),
-                       0 8px 24px rgba(0, 255, 255, 0.15),
-                       0 0 32px var(--core-glow-blue),
-                       inset 0 1px 0 rgba(0, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 153, 255, 0.06),
+                       0 4px 12px rgba(0, 255, 255, 0.04),
+                       0 0 16px rgba(0, 153, 255, 0.04),
+                       inset 0 1px 0 rgba(0, 255, 255, 0.15);
         }
         
         .stat-box:hover::before {
@@ -868,6 +871,36 @@
             }
         }
         
+        /* Stats Grid Responsiveness */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stat-box {
+                padding: 2rem 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                gap: 1rem;
+            }
+            
+            .stat-box {
+                padding: 1.5rem 1rem;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            .stats-grid {
+                gap: 3rem;
+                max-width: 1200px;
+                margin: 0 auto 2rem auto;
+            }
+        }
+        
         /* Join Movement Section */
         .movement-section {
             min-height: 70vh;
@@ -875,7 +908,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 60px 20px;
+            padding: 60px 0; /* Usunięto padding horizontal */
             position: relative;
             z-index: 2;
         }
@@ -887,11 +920,12 @@
             margin-bottom: 1rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
             padding-bottom: 1.5rem;
         }
         
@@ -906,19 +940,21 @@
         
         .carousel-container {
             position: relative;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100vw; /* Pełna szerokość viewport */
+            max-width: none; /* Usunięto ograniczenie szerokości */
+            margin: 0;
+            overflow: hidden;
         }
         
         .carousel-scroll {
             display: flex;
             gap: 1.5rem;
-            padding: 2rem 1rem;
+            padding: 2rem 2rem; /* Zwiększony padding na bokach */
             justify-content: center;
             align-items: center;
             overflow: hidden;
             min-height: 20rem;
+            width: 100%;
         }
         
         .profile-card {
@@ -927,32 +963,29 @@
             height: 18rem;
             border-radius: 1rem;
             background: rgba(0, 25, 40, 0.3);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             backdrop-filter: blur(15px);
             overflow: hidden;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
-                       0 4px 16px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            cursor: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15),
+                       0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .profile-card.active {
             transform: scale(1.1);
-            border-color: var(--core-cyan);
-            box-shadow: 
-                0 0 20px var(--core-glow-blue),
-                0 0 40px var(--core-glow-cyan),
-                0 16px 48px rgba(0, 153, 255, 0.3);
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 153, 255, 0.06),
+                       0 2px 10px rgba(0, 153, 255, 0.04);
         }
         
         .profile-card:hover {
-            border-color: var(--core-text-blue);
+            border: none;
             background: rgba(0, 25, 40, 0.5);
-            box-shadow: 0 12px 40px rgba(0, 153, 255, 0.2),
-                       0 6px 20px rgba(0, 255, 255, 0.15),
-                       0 0 24px var(--core-glow-blue);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05),
+                       0 2px 6px rgba(0, 0, 0, 0.08),
+                       0 0 10px rgba(0, 153, 255, 0.05);
         }
         
         .card-image {
@@ -1010,7 +1043,7 @@
             top: 50%;
             transform: translateY(-50%);
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: none;
             border-radius: 50%;
             width: 3rem;
             height: 3rem;
@@ -1018,25 +1051,25 @@
             align-items: center;
             justify-content: center;
             color: #ffffff;
-            cursor: pointer;
+            cursor: none;
             transition: all 0.3s ease;
             z-index: 10;
             /* Świecące kontury kosmiczne */
             box-shadow: 
-                0 0 8px rgba(64, 120, 255, 0.2),
-                0 0 16px rgba(32, 80, 200, 0.1),
+                0 0 8px rgba(64, 120, 255, 0.1),
+                0 0 16px rgba(32, 80, 200, 0.05),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .carousel-nav:hover {
             background: rgba(0, 0, 0, 0.7);
-            border-color: rgba(255, 255, 255, 0.4);
-            /* Intensywne świecące kontury przy hover */
+            border: none;
+            /* Delikatne świecące kontury przy hover */
             box-shadow: 
-                0 0 15px rgba(64, 120, 255, 0.4),
-                0 0 30px rgba(32, 80, 200, 0.3),
-                0 0 45px rgba(20, 50, 150, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 0 8px rgba(64, 120, 255, 0.1),
+                0 0 15px rgba(32, 80, 200, 0.08),
+                0 0 22px rgba(20, 50, 150, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .carousel-nav.prev {
@@ -1050,12 +1083,12 @@
         /* Responsive Movement */
         @media (max-width: 768px) {
             .movement-section {
-                padding: 50px 15px;
+                padding: 50px 0; /* Bez horizontal padding */
             }
             
             .carousel-scroll {
                 gap: 1rem;
-                padding: 1.5rem 0.5rem;
+                padding: 1.5rem 1rem; /* Minimalny padding na bokach */
             }
             
             .profile-card {
@@ -1097,12 +1130,13 @@
             margin-bottom: 1rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
             text-align: center;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
             padding-bottom: 1.5rem;
         }
         
@@ -1123,15 +1157,15 @@
         .step-item {
             background: rgba(0, 25, 40, 0.3);
             backdrop-filter: blur(15px);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 8px;
             padding: 2rem;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
-                       0 4px 16px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
         }
         
         .step-item::before {
@@ -1146,13 +1180,13 @@
         }
         
         .step-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             background: rgba(0, 25, 40, 0.5);
-            border-color: var(--core-cyan);
-            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.25),
-                       0 8px 24px rgba(0, 255, 255, 0.15),
-                       0 0 32px var(--core-glow-blue),
-                       inset 0 1px 0 rgba(0, 255, 255, 0.3);
+            border: none;
+            box-shadow: 0 8px 24px rgba(0, 153, 255, 0.06),
+                       0 4px 12px rgba(0, 255, 255, 0.04),
+                       0 0 16px rgba(0, 153, 255, 0.04),
+                       inset 0 1px 0 rgba(0, 255, 255, 0.15);
         }
         
         .step-item:hover::before {
@@ -1171,7 +1205,11 @@
             font-size: clamp(1.2rem, 3vw, 1.5rem);
             font-weight: 300;
             margin-bottom: 1rem;
-            color: #ffffff;
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px var(--core-glow-blue));
             letter-spacing: 0.05em;
         }
         
@@ -1185,7 +1223,7 @@
         .contract-info {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 8px;
             padding: 2rem;
             max-width: 600px;
@@ -1211,9 +1249,9 @@
         }
         
         .contract-info:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
+            border: none;
         }
         
         .contract-info:hover::before {
@@ -1237,16 +1275,16 @@
             backdrop-filter: blur(15px);
             padding: 0.5rem 1rem;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
         }
         
         .copy-button {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: none;
             color: #ffffff;
             padding: 0.5rem 1.5rem;
             border-radius: 8px;
-            cursor: pointer;
+            cursor: none;
             font-size: 0.9rem;
             font-weight: 300;
             transition: all 0.3s ease;
@@ -1255,8 +1293,8 @@
         
         .copy-button:hover {
             background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            border: none;
+            transform: translateY(-1px);
         }
         
         /* Responsive How to Buy */
@@ -1289,6 +1327,22 @@
             }
         }
         
+        /* Steps Grid Responsiveness */
+        @media (max-width: 768px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            .steps-grid {
+                gap: 3rem;
+                max-width: 1200px;
+                margin: 0 auto 3rem auto;
+            }
+        }
+        
         /* Whale Club Section */
         .whale-section {
             min-height: 70vh;
@@ -1313,12 +1367,13 @@
             margin-bottom: 1rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
             text-align: center;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
             padding-bottom: 1.5rem;
         }
         
@@ -1332,15 +1387,15 @@
         .whale-box {
             background: rgba(0, 25, 40, 0.3);
             backdrop-filter: blur(15px);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 8px;
             padding: 2.5rem;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0, 153, 255, 0.2),
-                       0 6px 20px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.25);
+            box-shadow: 0 12px 40px rgba(0, 153, 255, 0.1),
+                       0 6px 20px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.12);
         }
         
         .whale-box::before {
@@ -1355,13 +1410,13 @@
         }
         
         .whale-box:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             background: rgba(0, 25, 40, 0.5);
-            border-color: var(--core-cyan);
-            box-shadow: 0 20px 60px rgba(0, 153, 255, 0.3),
-                       0 10px 30px rgba(0, 255, 255, 0.2),
-                       0 0 40px var(--core-glow-blue),
-                       inset 0 1px 0 rgba(0, 255, 255, 0.4);
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 153, 255, 0.08),
+                       0 5px 15px rgba(0, 255, 255, 0.05),
+                       0 0 20px rgba(0, 153, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 255, 255, 0.2);
         }
         
         .whale-box:hover::before {
@@ -1390,7 +1445,11 @@
             font-size: clamp(1.2rem, 3vw, 1.5rem);
             font-weight: 300;
             margin: 0 0 0.5rem 0;
-            color: #ffffff;
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px var(--core-glow-blue));
             letter-spacing: 0.05em;
         }
         
@@ -1415,7 +1474,7 @@
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(15px);
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             margin-bottom: 1.5rem;
             position: relative;
             overflow: hidden;
@@ -1453,11 +1512,11 @@
         
         .wallet-btn {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: none;
             color: #ffffff;
             padding: 1rem 1.5rem;
             border-radius: 12px;
-            cursor: pointer;
+            cursor: none;
             font-size: clamp(0.85rem, 2vw, 0.95rem);
             font-weight: 300;
             transition: all 0.3s ease;
@@ -1470,8 +1529,8 @@
         
         .wallet-btn:hover {
             background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            border: none;
+            transform: translateY(-1px);
         }
         
         .wallet-btn:disabled {
@@ -1487,7 +1546,7 @@
         
         .telegram-invite {
             background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            border: none;
             border-radius: 12px;
             padding: 1.5rem;
             text-align: center;
@@ -1502,11 +1561,11 @@
         
         .telegram-btn {
             background: rgba(34, 197, 94, 0.2);
-            border: 1px solid rgba(34, 197, 94, 0.4);
+            border: none;
             color: #ffffff;
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
-            cursor: pointer;
+            cursor: none;
             font-size: 0.9rem;
             font-weight: 400;
             transition: all 0.3s ease;
@@ -1515,8 +1574,8 @@
         
         .telegram-btn:hover {
             background: rgba(34, 197, 94, 0.3);
-            border-color: rgba(34, 197, 94, 0.5);
-            transform: translateY(-2px);
+            border: none;
+            transform: translateY(-1px);
         }
         
         /* Responsive Whale Club */
@@ -1565,7 +1624,7 @@
             font-size: clamp(1.8rem, 6vw, 2.8rem);
             font-weight: 200;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -1573,6 +1632,7 @@
             text-transform: uppercase;
             position: relative;
             text-align: center;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
             padding-bottom: 1.5rem;
         }
         
@@ -1628,7 +1688,7 @@
             overflow: hidden;
             transition: transform 0.3s ease;
             flex-shrink: 0;
-            cursor: pointer;
+            cursor: none;
         }
         
         .art-item:hover {
@@ -1718,7 +1778,7 @@
             overflow: hidden;
             transition: transform 0.3s ease;
             flex-shrink: 0;
-            cursor: pointer;
+            cursor: none;
         }
         
         .art-item:hover {
@@ -1774,11 +1834,11 @@
         .category-btn {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 8px;
             color: rgba(255, 255, 255, 0.7);
             padding: 0.75rem 1.5rem;
-            cursor: pointer;
+            cursor: none;
             font-size: 0.9rem;
             font-weight: 300;
             transition: all 0.4s ease;
@@ -1800,9 +1860,9 @@
         
         .category-btn:hover {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
+            border: none;
             color: #ffffff;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
         
         .category-btn:hover::before {
@@ -1811,7 +1871,7 @@
         
         .category-btn.active {
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
+            border: none;
             color: #ffffff;
         }
         
@@ -1827,16 +1887,16 @@
         .art-item {
             background: rgba(0, 25, 40, 0.3);
             backdrop-filter: blur(15px);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 8px;
             overflow: hidden;
             transition: all 0.4s ease;
             position: relative;
-            cursor: pointer;
+            cursor: none;
             aspect-ratio: 16/10;
-            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
-                       0 4px 16px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
         }
         
         .art-item::before {
@@ -1851,13 +1911,13 @@
         }
         
         .art-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             background: rgba(0, 25, 40, 0.5);
-            border-color: var(--core-cyan);
-            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.25),
-                       0 8px 24px rgba(0, 255, 255, 0.15),
-                       0 0 32px var(--core-glow-blue),
-                       inset 0 1px 0 rgba(0, 255, 255, 0.3);
+            border: none;
+            box-shadow: 0 8px 24px rgba(0, 153, 255, 0.06),
+                       0 4px 12px rgba(0, 255, 255, 0.04),
+                       0 0 16px rgba(0, 153, 255, 0.04),
+                       inset 0 1px 0 rgba(0, 255, 255, 0.15);
         }
         
         .art-item:hover::before {
@@ -1937,7 +1997,7 @@
             max-width: 90vw;
             max-height: 90vh;
             background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -1947,12 +2007,12 @@
             top: 1rem;
             right: 1rem;
             background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: none;
             color: #ffffff;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            cursor: pointer;
+            cursor: none;
             font-size: 1.5rem;
             display: flex;
             align-items: center;
@@ -1963,7 +2023,7 @@
         
         .modal-close:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
+            border: none;
         }
         
         .modal-media img,
@@ -1994,6 +2054,246 @@
             }
         }
         
+        /* PFP Generator Section */
+        .pfp-generator-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .pfp-generator-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .pfp-generator-title {
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-weight: 200;
+            margin-bottom: 3rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-align: center;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
+            padding-bottom: 1.5rem;
+        }
+        
+        .pfp-generator-subtitle {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+        
+        .pfp-generator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .pfp-upload-area {
+            background: rgba(0, 25, 40, 0.3);
+            backdrop-filter: blur(15px);
+            border: none;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: none;
+        }
+        
+        .pfp-upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .pfp-upload-area:hover {
+            background: rgba(0, 25, 40, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.06),
+                       0 4px 16px rgba(0, 255, 255, 0.04);
+        }
+        
+        .pfp-upload-area:hover::before {
+            left: 100%;
+        }
+        
+        .pfp-upload-area.dragover {
+            background: rgba(0, 25, 40, 0.6);
+            box-shadow: 0 0 30px rgba(0, 153, 255, 0.15);
+        }
+        
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            color: var(--core-text-blue);
+            transition: all 0.3s ease;
+        }
+        
+        .pfp-upload-area:hover .upload-icon {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .upload-text {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+        
+        .upload-hint {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: none;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+        
+        .upload-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .pfp-preview-area {
+            background: rgba(0, 25, 40, 0.3);
+            backdrop-filter: blur(15px);
+            border: none;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-placeholder {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-weight: 300;
+        }
+        
+        .generate-btn {
+            padding: 12px 24px;
+            background: rgba(0, 25, 40, 0.3);
+            border: none;
+            border-radius: 0;
+            color: var(--core-text-blue);
+            font-size: 0.9rem;
+            font-weight: 200;
+            cursor: none;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
+            text-shadow: 0 0 10px var(--core-glow-blue);
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            margin-top: 1rem;
+        }
+        
+        .generate-btn:hover:not(:disabled) {
+            border: none;
+            background: rgba(0, 25, 40, 0.5);
+            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.12),
+                       0 8px 24px rgba(0, 255, 255, 0.08),
+                       0 0 32px var(--core-glow-blue),
+                       inset 0 1px 0 rgba(0, 255, 255, 0.3);
+            text-shadow: 0 0 20px var(--core-cyan);
+            cursor: none;
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Responsive PFP Generator */
+        @media (max-width: 768px) {
+            .pfp-generator-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .pfp-upload-area,
+            .pfp-preview-area {
+                min-height: 300px;
+                padding: 2rem 1.5rem;
+            }
+            
+            .upload-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .preview-placeholder {
+                width: 150px;
+                height: 150px;
+            }
+            
+        }
+        
         /* Roadmap Section */
         .roadmap-section {
             min-height: 70vh;
@@ -2018,12 +2318,13 @@
             margin-bottom: 1rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, var(--core-cyan), var(--core-blue), var(--core-text-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
             text-align: center;
+            filter: drop-shadow(0 0 10px var(--core-glow-blue));
             padding-bottom: 1.5rem;
         }
         
@@ -2060,7 +2361,7 @@
             height: 60px;
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -2087,7 +2388,7 @@
         
         .phase-item:hover .phase-number {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
+            border: none;
             transform: scale(1.05);
         }
         
@@ -2110,15 +2411,15 @@
             flex: 1;
             background: rgba(0, 25, 40, 0.3);
             backdrop-filter: blur(15px);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 8px;
             padding: 2.5rem;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
-                       0 4px 16px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
         }
         
         .phase-content::before {
@@ -2133,11 +2434,11 @@
         }
         
         .phase-content:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             background: rgba(0, 25, 40, 0.5);
-            border-color: var(--core-cyan);
-            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.25),
-                       0 8px 24px rgba(0, 255, 255, 0.15),
+            border: none;
+            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.12),
+                       0 8px 24px rgba(0, 255, 255, 0.08),
                        0 0 32px var(--core-glow-blue),
                        inset 0 1px 0 rgba(0, 255, 255, 0.3);
         }
@@ -2308,18 +2609,18 @@
             backdrop-filter: blur(15px);
             padding: 0.5rem;
             border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             line-height: 1.4;
         }
         
         .copy-button-footer {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 6px;
             color: rgba(255, 255, 255, 0.8);
             padding: 0.5rem 1rem;
-            cursor: pointer;
+            cursor: none;
             font-size: 0.8rem;
             font-weight: 300;
             transition: all 0.3s ease;
@@ -2329,9 +2630,9 @@
         
         .copy-button-footer:hover {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
+            border: none;
             color: #ffffff;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
         
         .footer-divider {
@@ -2365,7 +2666,7 @@
             height: 40px;
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -2391,7 +2692,7 @@
         
         .social-link:hover {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
+            border: none;
             color: #ffffff;
             transform: translateY(-3px) scale(1.05);
         }
@@ -2456,23 +2757,39 @@
             justify-content: center;
             align-items: center;
             animation: fadeIn 2s ease-in-out;
+            /* Ensure only logo triggers hover */
+            pointer-events: none;
         }
         
         .core-logo {
-            max-width: 300px;
-            width: 80vw;
+            max-width: 600px; /* Zmniejszone z 800px */
+            width: 65vw; /* Zmniejszone z 75vw */
             height: auto;
-            filter: drop-shadow(0 0 20px var(--core-glow-blue)) 
-                   drop-shadow(0 0 40px var(--core-glow-cyan))
-                   drop-shadow(0 0 60px var(--core-blue));
+            display: block;
+            filter: drop-shadow(0 0 15px var(--core-glow-blue)) 
+                   drop-shadow(0 0 25px var(--core-glow-cyan))
+                   drop-shadow(0 0 35px var(--core-blue));
             transition: all 0.5s ease;
+            /* Ensure proper SVG rendering */
+            max-height: 200px; /* Zmniejszone z 240px */
+            object-fit: contain;
+            /* Make hover area more precise */
+            padding: 0;
+            margin: 0;
+            cursor: none;
+            pointer-events: auto;
+            /* Force very tight boundaries for hover */
+            border: 0;
+            outline: none;
+            /* Scale up to original size but keep smaller hover area */
+            transform: scale(1.33); /* 600px * 1.33 = ~800px */
         }
 
         .core-logo:hover {
-            filter: drop-shadow(0 0 30px var(--core-cyan)) 
-                   drop-shadow(0 0 60px var(--core-blue))
-                   drop-shadow(0 0 90px var(--core-accent));
-            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px var(--core-cyan)) 
+                   drop-shadow(0 0 35px var(--core-blue))
+                   drop-shadow(0 0 50px var(--core-accent));
+            transform: scale(1.4); /* Scale from 1.33 to 1.4 for hover effect */
         }
         
         @keyframes fadeIn {
@@ -2489,15 +2806,31 @@
         /* Responsive */
         @media (max-width: 768px) {
             .core-logo {
-                max-width: 250px;
+                max-width: 560px;
                 width: 70vw;
+                max-height: 175px;
             }
         }
         
         @media (max-width: 480px) {
             .core-logo {
-                max-width: 200px;
+                max-width: 470px;
                 width: 65vw;
+                max-height: 145px;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            .core-logo {
+                max-width: 935px;
+                max-height: 295px;
+            }
+        }
+        
+        @media (min-width: 1920px) {
+            .core-logo {
+                max-width: 1070px;
+                max-height: 335px;
             }
         }
         
@@ -2564,18 +2897,18 @@
             
             padding: 12px 24px;
             background: rgba(0, 25, 40, 0.3);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 0;
             color: var(--core-text-blue);
             font-size: 0.9rem;
             font-weight: 200;
-            cursor: pointer;
+            cursor: none;
             letter-spacing: 0.2em;
             text-transform: uppercase;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15),
-                       0 4px 16px rgba(0, 255, 255, 0.1),
-                       inset 0 1px 0 rgba(0, 153, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
             text-shadow: 0 0 10px var(--core-glow-blue);
             transition: all 0.3s ease;
             user-select: none;
@@ -2583,14 +2916,14 @@
         }
 
         .loader-enter-button:hover {
-            border-color: var(--core-cyan);
+            border: none;
             background: rgba(0, 25, 40, 0.5);
-            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.25),
-                       0 8px 24px rgba(0, 255, 255, 0.15),
+            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.12),
+                       0 8px 24px rgba(0, 255, 255, 0.08),
                        0 0 32px var(--core-glow-blue),
                        inset 0 1px 0 rgba(0, 255, 255, 0.3);
             text-shadow: 0 0 20px var(--core-cyan);
-            cursor: pointer;
+            cursor: none;
         }
 
         .loader-enter-button:active {
@@ -2629,10 +2962,10 @@
             aspect-ratio: 16/9;
             border-radius: 0;
             overflow: hidden;
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             background: rgba(0, 25, 40, 0.3);
-            box-shadow: 0 12px 40px rgba(0, 153, 255, 0.2),
-                       0 6px 20px rgba(0, 255, 255, 0.1),
+            box-shadow: 0 12px 40px rgba(0, 153, 255, 0.1),
+                       0 6px 20px rgba(0, 255, 255, 0.05),
                        0 0 32px var(--core-glow-blue);
         }
 
@@ -2648,12 +2981,12 @@
             left: 20px;
             padding: 8px 16px;
             background: rgba(0, 25, 40, 0.3);
-            border: 1px solid var(--core-glow-blue);
+            border: none;
             border-radius: 0;
             color: var(--core-text-blue);
             font-size: 0.8rem;
             font-weight: 200;
-            cursor: pointer;
+            cursor: none;
             transition: all 0.3s ease;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-transform: uppercase;
@@ -2666,13 +2999,13 @@
         }
 
         .loader-skip-button:hover {
-            border-color: var(--core-cyan);
+            border: none;
             background: rgba(0, 25, 40, 0.5);
-            box-shadow: 0 8px 24px rgba(0, 153, 255, 0.2),
-                       0 4px 12px rgba(0, 255, 255, 0.1),
+            box-shadow: 0 8px 24px rgba(0, 153, 255, 0.1),
+                       0 4px 12px rgba(0, 255, 255, 0.05),
                        0 0 16px var(--core-glow-blue);
             text-shadow: 0 0 16px var(--core-cyan);
-            cursor: pointer;
+            cursor: none;
         }
 
         .loader-skip-button:active {
@@ -3143,6 +3476,34 @@
         </div>
     </section>
     
+    <!-- PFP Generator Section -->
+    <section class="pfp-generator-section" id="pfp-generator">
+        <div class="pfp-generator-content">
+            <h2 class="pfp-generator-title fade-in">PFP GENERATOR</h2>
+            <p class="pfp-generator-subtitle fade-in delay-1">Transform your image with CORE aura effects</p>
+            
+            <div class="pfp-generator-container fade-in delay-2">
+                <div class="pfp-upload-area" id="uploadArea">
+                    <div class="upload-icon">+</div>
+                    <div class="upload-text">Upload or drag an image here</div>
+                    <div class="upload-hint">to generate its aura</div>
+                    <button class="upload-button" id="uploadBtn">UPLOAD AN IMAGE FIRST</button>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="pfp-preview-area">
+                    <div class="preview-placeholder" id="previewArea">
+                        <div class="preview-text">Your generated CORE aura<br>will appear here</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="generate-btn fade-in delay-4" id="generateBtn" disabled>
+                Generate CORE Aura
+            </button>
+        </div>
+    </section>
+    
     <!-- Roadmap Section -->
     <section class="roadmap-section" id="roadmap">
         <div class="roadmap-content">
@@ -3375,8 +3736,18 @@
             
             init() {
                 // Create stars with better initial distribution
+                const viewportWidth = window.innerWidth;
                 const viewportHeight = window.innerHeight;
                 const totalHeight = Math.max(document.body.scrollHeight, viewportHeight * 3);
+                
+                // Increase number of stars for larger screens
+                if (viewportWidth > 1920) {
+                    this.numStars = 500; // Więcej gwiazd dla dużych monitorów
+                } else if (viewportWidth > 1440) {
+                    this.numStars = 400;
+                } else {
+                    this.numStars = 300;
+                }
                 
                 // Ensure good coverage in first viewport
                 const starsInViewport = Math.floor(this.numStars * 0.4); // 40% in first screen
@@ -3448,21 +3819,19 @@
             }
             
             handleResize() {
-                const documentHeight = document.body.scrollHeight || window.innerHeight * 2;
+                const newWidth = window.innerWidth;
+                const newHeight = window.innerHeight;
+                const documentHeight = document.body.scrollHeight || newHeight * 2;
                 
-                this.stars.forEach(star => {
-                    if (star.originalX > window.innerWidth) {
-                        star.originalX = Math.random() * window.innerWidth;
-                        star.currentX = star.originalX;
-                    }
-                    if (star.originalY > documentHeight) {
-                        star.originalY = Math.random() * documentHeight;
-                        star.currentY = star.originalY;
-                    }
-                });
+                // Clear existing stars and recreate for new screen size
+                this.container.innerHTML = '';
+                this.stars = [];
+                
+                // Reinitialize with new dimensions
+                this.init();
                 
                 // Update container height
-                this.container.style.height = Math.max(documentHeight, window.innerHeight * 2) + 'px';
+                this.container.style.height = Math.max(documentHeight, newHeight * 2) + 'px';
             }
             
             animate() {
@@ -3948,7 +4317,7 @@
             startAutoPlay() {
                 this.autoPlayInterval = setInterval(() => {
                     this.nextCard();
-                }, 4000);
+                }, 7000); // Zmieniono z 4000 na 7000ms (7 sekund)
             }
             
             pauseAutoPlay() {
@@ -4062,24 +4431,62 @@
             try {
                 updateStatus('Verifying CORE token balance...', 'loading');
                 
-                // Note: This is a mock verification for demo purposes
-                // In production, you would need to:
-                // 1. Query Solana RPC for token accounts
-                // 2. Check CORE token balance using the contract address
-                // 3. Verify the balance meets the whale threshold
+                // Real Solana RPC verification
+                const connection = 'https://api.mainnet-beta.solana.com';
                 
-                // Mock verification (remove in production)
-                setTimeout(() => {
-                    // Simulate random verification result for demo
-                    const isWhale = Math.random() > 0.5; // 50% chance for demo
+                try {
+                    // Get token accounts for the wallet
+                    const response = await fetch(connection, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            id: 1,
+                            method: 'getTokenAccountsByOwner',
+                            params: [
+                                publicKey,
+                                {
+                                    mint: CORE_TOKEN_ADDRESS
+                                },
+                                {
+                                    encoding: 'jsonParsed'
+                                }
+                            ]
+                        })
+                    });
                     
-                    if (isWhale) {
-                        updateStatus(`✅ Wallet verified! You hold ${WHALE_THRESHOLD.toLocaleString()}+ CORE tokens.`, 'success');
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error.message);
+                    }
+                    
+                    let totalCoreBalance = 0;
+                    
+                    if (data.result && data.result.value && data.result.value.length > 0) {
+                        // Sum up all CORE token balances
+                        for (const tokenAccount of data.result.value) {
+                            const balance = tokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
+                            if (balance) {
+                                totalCoreBalance += balance;
+                            }
+                        }
+                    }
+                    
+                    // Check if balance meets whale threshold
+                    if (totalCoreBalance >= WHALE_THRESHOLD) {
+                        updateStatus(`✅ Wallet verified! You hold ${totalCoreBalance.toLocaleString()} CORE tokens.`, 'success');
                         showTelegramInvite();
                     } else {
-                        updateStatus(`❌ Insufficient CORE tokens. You need ${WHALE_THRESHOLD.toLocaleString()} CORE to join Whale Club.`, 'error');
+                        updateStatus(`❌ Insufficient CORE tokens. You have ${totalCoreBalance.toLocaleString()} CORE, but need ${WHALE_THRESHOLD.toLocaleString()} to join Whale Club.`, 'error');
                     }
-                }, 2000);
+                    
+                } catch (rpcError) {
+                    console.error('RPC Error:', rpcError);
+                    updateStatus('❌ Failed to verify token balance. Please try again later.', 'error');
+                }
                 
                 walletConnected = true;
                 
@@ -4112,7 +4519,7 @@
                 statusElement.style.borderColor = 'rgba(59, 130, 246, 0.3)';
                 statusText.style.color = 'rgba(59, 130, 246, 0.9)';
             } else {
-                statusElement.style.background = 'rgba(0, 0, 0, 0.3)';
+                statusElement.style.background = 'rgba(0, 0, 0, 0.15)';
                 statusElement.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                 statusText.style.color = 'rgba(255, 255, 255, 0.8)';
             }
@@ -4463,7 +4870,7 @@
                 if (navbar) {
                     const testButton = document.createElement('button');
                     testButton.textContent = '🧪 Test';
-                    testButton.style.cssText = 'margin-left: 10px; padding: 5px 10px; background: rgba(64,120,255,0.3); border: 1px solid rgba(64,120,255,0.8); color: white; border-radius: 5px; cursor: pointer;';
+                    testButton.style.cssText = 'margin-left: 10px; padding: 5px 10px; background: rgba(64,120,255,0.3); border: none; color: white; border-radius: 5px; cursor: none;';
                     testButton.onclick = window.testAnimations;
                     navbar.appendChild(testButton);
                 }
@@ -4603,7 +5010,146 @@
             updateDateDisplay();
             setTimeout(startDateCountdown, 1000);
             
-            // Debug functions
+            // PFP Generator functionality
+        class PFPGenerator {
+            constructor() {
+                this.uploadArea = document.getElementById('uploadArea');
+                this.imageInput = document.getElementById('imageInput');
+                this.uploadBtn = document.getElementById('uploadBtn');
+                this.previewArea = document.getElementById('previewArea');
+                this.generateBtn = document.getElementById('generateBtn');
+                this.selectedStyle = 'core-01';
+                this.uploadedImage = null;
+                
+                this.initEventListeners();
+            }
+            
+            initEventListeners() {
+                // Upload button click
+                this.uploadBtn.addEventListener('click', () => {
+                    this.imageInput.click();
+                });
+                
+                // File input change
+                this.imageInput.addEventListener('change', (e) => {
+                    this.handleFileSelect(e.target.files[0]);
+                });
+                
+                // Drag and drop
+                this.uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.uploadArea.classList.add('dragover');
+                });
+                
+                this.uploadArea.addEventListener('dragleave', () => {
+                    this.uploadArea.classList.remove('dragover');
+                });
+                
+                this.uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.uploadArea.classList.remove('dragover');
+                    this.handleFileSelect(e.dataTransfer.files[0]);
+                });
+                
+                // Generate button
+                this.generateBtn.addEventListener('click', () => {
+                    this.generateAura();
+                });
+            }
+            
+            handleFileSelect(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.uploadedImage = e.target.result;
+                    this.updateUploadArea();
+                    this.enableGenerate();
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            updateUploadArea() {
+                this.uploadArea.innerHTML = `
+                    <div style="width: 150px; height: 150px; border-radius: 8px; overflow: hidden; margin-bottom: 1rem;">
+                        <img src="${this.uploadedImage}" style="width: 100%; height: 100%; object-fit: cover;" alt="Uploaded image">
+                    </div>
+                    <div class="upload-text">Image uploaded successfully!</div>
+                    <div class="upload-hint">Choose an aura style and generate</div>
+                    <button class="upload-button" id="uploadNewBtn">Upload Different Image</button>
+                `;
+                
+                // Re-attach event listener for new upload button
+                document.getElementById('uploadNewBtn').addEventListener('click', () => {
+                    this.imageInput.click();
+                });
+            }
+            
+            enableGenerate() {
+                this.generateBtn.disabled = false;
+                this.generateBtn.style.opacity = '1';
+            }
+            
+            generateAura() {
+                if (!this.uploadedImage) return;
+                
+                // Show loading state
+                this.generateBtn.textContent = 'Generating...';
+                this.generateBtn.disabled = true;
+                
+                // Simulate API call (replace with actual API integration)
+                setTimeout(() => {
+                    this.showGeneratedResult();
+                }, 2000);
+            }
+            
+            showGeneratedResult() {
+                // This would normally be the result from the API
+                // For now, show a placeholder with the original image and effect
+                this.previewArea.innerHTML = `
+                    <div style="position: relative; width: 200px; height: 200px; border-radius: 12px; overflow: hidden;">
+                        <img src="${this.uploadedImage}" style="width: 100%; height: 100%; object-fit: cover;" alt="Generated aura">
+                        <div style="position: absolute; inset: 0; background: linear-gradient(45deg, rgba(0,153,255,0.3), rgba(0,255,255,0.2)); border-radius: 12px;"></div>
+                        <div style="position: absolute; inset: 0; box-shadow: inset 0 0 30px rgba(0,153,255,0.5); border-radius: 12px;"></div>
+                    </div>
+                    <div style="margin-top: 1rem; color: var(--core-text-blue); font-weight: 400;">
+                        CORE Aura Generated!
+                    </div>
+                    <button style="margin-top: 1rem; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: none;">
+                        Download Result
+                    </button>
+                `;
+                
+                // Reset generate button
+                this.generateBtn.textContent = 'Generate CORE Aura';
+                this.generateBtn.disabled = false;
+            }
+        }
+        
+        // Initialize PFP Generator
+        if (document.getElementById('uploadArea')) {
+            new PFPGenerator();
+        }
+        
+        // Navigation link for PFP Generator
+        function addPFPGeneratorNavLink() {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks && !document.querySelector('a[href="#pfp-generator"]')) {
+                const pfpLink = document.createElement('a');
+                pfpLink.href = '#pfp-generator';
+                pfpLink.className = 'nav-link';
+                pfpLink.textContent = 'PFP Generator';
+                navLinks.insertBefore(pfpLink, navLinks.children[navLinks.children.length - 1]);
+            }
+        }
+        
+        // Add nav link when page loads
+        document.addEventListener('DOMContentLoaded', addPFPGeneratorNavLink);
+        
+        // Debug functions
             window.skipLoaderToVideo = () => showEnterButton();
             window.skipLoaderToMain = () => openMainSite();
         }
