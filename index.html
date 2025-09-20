@@ -1542,30 +1542,20 @@
         .carousel-row {
             display: flex;
             gap: 30px;
-            animation: slideRight 120s linear infinite; /* Bardzo bardzo wolno */
-            width: fit-content;
+            width: max-content;
+            flex-wrap: nowrap;
+            will-change: transform;
+            animation: marquee 60s linear infinite;
         }
-        
+
         .carousel-row.reverse {
-            animation: slideLeft 150s linear infinite; /* Jeszcze wolniej */
+            animation-duration: 75s;
+            animation-direction: reverse;
         }
-        
-        @keyframes slideRight {
-            0% {
-                transform: translateX(-30%);
-            }
-            100% {
-                transform: translateX(70%);
-            }
-        }
-        
-        @keyframes slideLeft {
-            0% {
-                transform: translateX(-30%);
-            }
-            100% {
-                transform: translateX(-130%);
-            }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
         .art-item {
@@ -1580,7 +1570,7 @@
         }
         
         .art-item:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
         
         .art-item img {
@@ -1591,23 +1581,10 @@
         }
         
         .art-item:hover img {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
         
-        .art-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            padding: 30px 20px 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        
-        .art-item:hover .art-overlay {
-            transform: translateY(0);
-        }
+        .art-overlay { display: none !important; }
         
         .art-overlay h3 {
             font-size: 1.1rem;
@@ -1628,34 +1605,24 @@
             margin: 40px 0;
             position: relative;
         }
-        
+
         .carousel-row {
             display: flex;
             gap: 30px;
-            animation: slideRight 120s linear infinite;
-            width: fit-content;
+            width: max-content;
+            flex-wrap: nowrap;
+            will-change: transform;
+            animation: marquee 60s linear infinite;
         }
-        
-        .carousel-row.reverse {
-            animation: slideLeft 150s linear infinite;
+
+        .carousel-row.reverse { 
+            animation-duration: 75s;
+            animation-direction: reverse;
         }
-        
-        @keyframes slideRight {
-            0% {
-                transform: translateX(-30%);
-            }
-            100% {
-                transform: translateX(70%);
-            }
-        }
-        
-        @keyframes slideLeft {
-            0% {
-                transform: translateX(-30%);
-            }
-            100% {
-                transform: translateX(-130%);
-            }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
         .art-item {
@@ -4251,6 +4218,18 @@
             }, 2000);
         }
         
+        // Seamless carousel duplicator for Art section
+        (function initSeamlessCarousels(){
+            try {
+                const rows = document.querySelectorAll('.carousel-row');
+                rows.forEach(row => {
+                    if (!row || row.dataset.duplicated === 'true') return;
+                    row.innerHTML = row.innerHTML + row.innerHTML;
+                    row.dataset.duplicated = 'true';
+                });
+            } catch(e) { /* no-op */ }
+        })();
+
         // Art Gallery System
         class ArtGallery {
             constructor() {
