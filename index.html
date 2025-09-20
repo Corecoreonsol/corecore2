@@ -4387,6 +4387,65 @@
         const CORE_TOKEN_ADDRESS = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
         const WHALE_THRESHOLD = 10000000; // 10M CORE tokens
         
+        // Debug mode - set to true for testing
+        const DEBUG_MODE = true;
+        
+        // Test function to verify RPC connection
+        async function testRPCConnection(endpoint, publicKey) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'getBalance',
+                        params: [publicKey]
+                    })
+                });
+                
+                const data = await response.json();
+                if (DEBUG_MODE) console.log('RPC test response:', data);
+                return !data.error && data.result !== undefined;
+            } catch (error) {
+                if (DEBUG_MODE) console.error('RPC test error:', error);
+                return false;
+            }
+        }
+        
+        // Function to verify if token mint exists
+        async function verifyTokenMint(endpoint, mintAddress) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'getAccountInfo',
+                        params: [
+                            mintAddress,
+                            {
+                                encoding: 'jsonParsed'
+                            }
+                        ]
+                    })
+                });
+                
+                const data = await response.json();
+                if (DEBUG_MODE) console.log('Token mint verification:', data);
+                
+                return !data.error && data.result && data.result.value !== null;
+            } catch (error) {
+                if (DEBUG_MODE) console.error('Token mint verification error:', error);
+                return false;
+            }
+        }
+        
         async function connectPhantom() {
             try {
                 if (!window.solana || !window.solana.isPhantom) {
@@ -4429,14 +4488,49 @@
         
         async function verifyTokenBalance(publicKey, walletName) {
             try {
+                updateStatus('Connecting to Solana network...', 'loading');
+                console.log('Starting verification for wallet:', publicKey);
+                
+                // Multiple RPC endpoints for reliability
+                const rpcEndpoints = [
+                    'https://api.mainnet-beta.solana.com',
+                    'https://solana-api.projectserum.com',
+                    'https://rpc.ankr.com/solana'
+                ];
+                
+                let workingEndpoint = null;
+                
+                // First test which endpoints are working
+                for (const endpoint of rpcEndpoints) {
+                    console.log('Testing RPC endpoint:', endpoint);
+                    const isWorking = await testRPCConnection(endpoint, publicKey);
+                    if (isWorking) {
+                        workingEndpoint = endpoint;
+                        console.log('Found working endpoint:', endpoint);
+                        break;
+                    }
+                }
+                
+                if (!workingEndpoint) {
+                    updateStatus('❌ Unable to connect to Solana network. Please try again later.', 'error');
+                    return;
+                }
+                
                 updateStatus('Verifying CORE token balance...', 'loading');
                 
-                // Real Solana RPC verification
-                const connection = 'https://api.mainnet-beta.solana.com';
+                // First verify if the token mint exists
+                const mintExists = await verifyTokenMint(workingEndpoint, CORE_TOKEN_ADDRESS);
+                if (!mintExists) {
+                    console.error('Token mint does not exist:', CORE_TOKEN_ADDRESS);
+                    updateStatus('❌ CORE token not found on Solana network. Please contact support.', 'error');
+                    return;
+                }
+                
+                if (DEBUG_MODE) console.log('Token mint verified successfully');
                 
                 try {
                     // Get token accounts for the wallet
-                    const response = await fetch(connection, {
+                    const response = await fetch(workingEndpoint, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -4457,23 +4551,44 @@
                         })
                     });
                     
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
                     const data = await response.json();
+                    console.log('Token accounts response:', data);
                     
                     if (data.error) {
-                        throw new Error(data.error.message);
+                        console.error('RPC returned error:', data.error);
+                        
+                        // If it's an invalid mint address error, show specific message
+                        if (data.error.message && data.error.message.includes('Invalid param')) {
+                            updateStatus('❌ Invalid token address. Please contact support.', 'error');
+                            return;
+                        }
+                        
+                        throw new Error(`RPC Error: ${data.error.message}`);
                     }
                     
                     let totalCoreBalance = 0;
                     
                     if (data.result && data.result.value && data.result.value.length > 0) {
+                        console.log('Found CORE token accounts:', data.result.value.length);
+                        
                         // Sum up all CORE token balances
                         for (const tokenAccount of data.result.value) {
                             const balance = tokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
                             if (balance) {
                                 totalCoreBalance += balance;
+                                console.log('Account balance:', balance);
                             }
                         }
+                    } else {
+                        console.log('No CORE token accounts found for this wallet');
                     }
+                    
+                    console.log('Total CORE balance:', totalCoreBalance);
+                    console.log('Whale threshold:', WHALE_THRESHOLD);
                     
                     // Check if balance meets whale threshold
                     if (totalCoreBalance >= WHALE_THRESHOLD) {
@@ -4483,16 +4598,16 @@
                         updateStatus(`❌ Insufficient CORE tokens. You have ${totalCoreBalance.toLocaleString()} CORE, but need ${WHALE_THRESHOLD.toLocaleString()} to join Whale Club.`, 'error');
                     }
                     
+                    walletConnected = true;
+                    
                 } catch (rpcError) {
-                    console.error('RPC Error:', rpcError);
-                    updateStatus('❌ Failed to verify token balance. Please try again later.', 'error');
+                    console.error('Token verification error:', rpcError);
+                    updateStatus('❌ Failed to verify token balance. Please try again.', 'error');
                 }
-                
-                walletConnected = true;
                 
             } catch (error) {
                 console.error('Balance verification error:', error);
-                updateStatus('Failed to verify token balance. Please try again.', 'error');
+                updateStatus('❌ Verification failed. Please try again later.', 'error');
             }
         }
         
