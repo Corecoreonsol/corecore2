@@ -3256,6 +3256,10 @@
                         <span class="btn-icon">◇</span>
                         Connect Phantom
                     </button>
+                    <a class="wallet-btn" id="openInPhantomBtn" href="#" style="display:none; text-decoration:none; text-align:center;">
+                        <span class="btn-icon">◈</span>
+                        Open in Phantom
+                    </a>
                 </div>
 
                 <div class="telegram-invite" id="telegramInvite" style="display: none;">
@@ -4371,18 +4375,20 @@
         }
         
         // Whale Club Wallet Verification (frontend-only)
-        (function initWhaleVerification(){
+    (function initWhaleVerification(){
             const CORE_TOKEN_MINT = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
             const WHALE_THRESHOLD = 10_000_000; // 10M CORE
             const RPC_ENDPOINTS = [
-                'https://api.mainnet-beta.solana.com',
-                'https://rpc.ankr.com/solana'
+                'https://rpc.ankr.com/solana',
+                'https://solana-api.projectserum.com',
+                'https://api.mainnet-beta.solana.com'
             ];
 
             const connectBtn = document.getElementById('phantomConnectBtn');
             const statusEl = document.getElementById('walletStatus');
             const statusText = statusEl ? statusEl.querySelector('.status-text') : null;
             const inviteBox = document.getElementById('telegramInvite');
+            const openInPhantomBtn = document.getElementById('openInPhantomBtn');
             const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
             function setStatus(message, type){
@@ -4421,7 +4427,7 @@
                     method: 'getParsedTokenAccountsByOwner',
                     params: [
                         ownerPubkey,
-                        { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+                        { mint: CORE_TOKEN_MINT },
                         { commitment: 'confirmed' }
                     ]
                 };
@@ -4432,7 +4438,7 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(body)
-                        }), 12000);
+                        }), 15000);
                         const json = await res.json();
                         if(json.error) throw new Error(json.error?.message || 'RPC error');
                         if(!json.result || !json.result.value) return 0;
@@ -4457,6 +4463,11 @@
                     if(!provider || !provider.isPhantom){
                         if(isMobile){
                             setStatus('On mobile: open this site inside the Phantom app browser (Phantom > Browser > enter URL).', 'error');
+                            if(openInPhantomBtn){
+                                const url = encodeURIComponent(window.location.href);
+                                openInPhantomBtn.href = `https://phantom.app/ul/browse?url=${url}`;
+                                openInPhantomBtn.style.display = 'flex';
+                            }
                         } else {
                             setStatus('Phantom wallet not detected. Please install Phantom extension.', 'error');
                         }
@@ -4464,6 +4475,7 @@
                     }
                     setStatus('Connecting to Phantom...', 'loading');
 
+                    if(connectBtn){ connectBtn.disabled = true; }
                     let pubkey;
                     try {
                         const quick = await provider.connect({ onlyIfTrusted: true });
@@ -4475,6 +4487,7 @@
                     }
                     if(!pubkey){
                         setStatus('Failed to read wallet public key.', 'error');
+                        if(connectBtn){ connectBtn.disabled = false; }
                         return;
                     }
                     setStatus('Verifying CORE token balance...', 'loading');
@@ -4483,8 +4496,17 @@
                         bal = await getCoreTokenBalance(pubkey);
                     } catch(err){
                         console.error('RPC error while fetching balance', err);
-                        setStatus('Network error while verifying balance. Please try again in a moment.', 'error');
+                        let msg = 'Network error while verifying balance. Please try again in a moment.';
+                        if(err && err.message){
+                            if(/cors|fetch|failed to fetch|timeout/i.test(err.message)){
+                                msg = 'Network error (RPC/CORS). Retrying with fallback endpoints… please try again if it persists.';
+                            } else {
+                                msg = `Network error: ${err.message}. Please try again.`;
+                            }
+                        }
+                        setStatus(msg, 'error');
                         if(inviteBox){ inviteBox.style.display = 'none'; }
+                        if(connectBtn){ connectBtn.disabled = false; }
                         return;
                     }
                     const balInt = Math.floor(bal);
@@ -4496,6 +4518,7 @@
                         setStatus(`❌ You hold ${balInt.toLocaleString()} CORE. You need ${need} more CORE to join Whale Club.`, 'error');
                         if(inviteBox){ inviteBox.style.display = 'none'; }
                     }
+                    if(connectBtn){ connectBtn.disabled = false; }
 
                     // Re-check on account change
                     try {
@@ -4527,6 +4550,7 @@
                     console.error('Phantom connect error', err);
                     setStatus('Failed to connect or verify. Please try again.', 'error');
                     if(inviteBox){ inviteBox.style.display = 'none'; }
+                    if(connectBtn){ connectBtn.disabled = false; }
                 }
             }
 
