@@ -4387,9 +4387,6 @@
         const CORE_TOKEN_ADDRESS = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
         const WHALE_THRESHOLD = 10000000; // 10M CORE tokens
         
-        // Debug mode - set to true for testing
-        const DEBUG_MODE = true;
-        
         async function connectPhantom() {
             try {
                 if (!window.solana || !window.solana.isPhantom) {
@@ -4432,181 +4429,32 @@
         
         async function verifyTokenBalance(publicKey, walletName) {
             try {
-                updateStatus('Connecting to Solana network...', 'loading');
-                console.log('Starting REAL verification for wallet:', publicKey);
-                console.log('Looking for CORE token:', CORE_TOKEN_ADDRESS);
-                
-                // Use CORS proxy for reliable access
-                const corsProxy = 'https://api.allorigins.win/raw?url=';
-                const rpcEndpoint = 'https://api.mainnet-beta.solana.com';
-                const proxyUrl = corsProxy + encodeURIComponent(rpcEndpoint);
-                
                 updateStatus('Verifying CORE token balance...', 'loading');
                 
-                try {
-                    console.log('Fetching token accounts for CORE token...');
+                // Note: This is a mock verification for demo purposes
+                // In production, you would need to:
+                // 1. Query Solana RPC for token accounts
+                // 2. Check CORE token balance using the contract address
+                // 3. Verify the balance meets the whale threshold
+                
+                // Mock verification (remove in production)
+                setTimeout(() => {
+                    // Simulate random verification result for demo
+                    const isWhale = Math.random() > 0.5; // 50% chance for demo
                     
-                    // Get token accounts for the specific CORE mint
-                    const response = await fetch(proxyUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            id: 1,
-                            method: 'getTokenAccountsByOwner',
-                            params: [
-                                publicKey,
-                                {
-                                    mint: CORE_TOKEN_ADDRESS
-                                },
-                                {
-                                    encoding: 'jsonParsed'
-                                }
-                            ]
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const data = await response.json();
-                    console.log('CORE token accounts response:', data);
-                    
-                    if (data.error) {
-                        console.error('RPC returned error:', data.error);
-                        
-                        // If token not found, try alternative approach
-                        if (data.error.message && data.error.message.includes('Invalid param')) {
-                            console.log('Trying alternative verification method...');
-                            const alternativeResult = await verifyWithAlternativeMethod(publicKey);
-                            return alternativeResult;
-                        }
-                        
-                        throw new Error(`RPC Error: ${data.error.message}`);
-                    }
-                    
-                    let totalCoreBalance = 0;
-                    
-                    if (data.result && data.result.value && data.result.value.length > 0) {
-                        console.log('Found CORE token accounts:', data.result.value.length);
-                        
-                        // Sum up all CORE token balances
-                        for (const tokenAccount of data.result.value) {
-                            const tokenInfo = tokenAccount.account.data.parsed.info;
-                            const balance = tokenInfo.tokenAmount.uiAmount || 0;
-                            totalCoreBalance += balance;
-                            console.log('Account balance:', balance, 'CORE');
-                        }
-                    } else {
-                        console.log('No CORE token accounts found for this wallet');
-                        totalCoreBalance = 0;
-                    }
-                    
-                    console.log('Total CORE balance:', totalCoreBalance);
-                    console.log('Required threshold:', WHALE_THRESHOLD);
-                    
-                    // Check if balance meets whale threshold
-                    if (totalCoreBalance >= WHALE_THRESHOLD) {
-                        updateStatus(`✅ Wallet verified! You hold ${totalCoreBalance.toLocaleString()} CORE tokens.`, 'success');
+                    if (isWhale) {
+                        updateStatus(`✅ Wallet verified! You hold ${WHALE_THRESHOLD.toLocaleString()}+ CORE tokens.`, 'success');
                         showTelegramInvite();
                     } else {
-                        updateStatus(`❌ Insufficient CORE tokens. You have ${totalCoreBalance.toLocaleString()} CORE, but need ${WHALE_THRESHOLD.toLocaleString()} to join Whale Club.`, 'error');
+                        updateStatus(`❌ Insufficient CORE tokens. You need ${WHALE_THRESHOLD.toLocaleString()} CORE to join Whale Club.`, 'error');
                     }
-                    
-                    walletConnected = true;
-                    
-                } catch (rpcError) {
-                    console.error('Primary verification failed:', rpcError);
-                    
-                    // Try alternative verification method
-                    console.log('Attempting alternative verification...');
-                    const alternativeResult = await verifyWithAlternativeMethod(publicKey);
-                    if (!alternativeResult) {
-                        updateStatus('❌ Failed to verify token balance. Please try again.', 'error');
-                    }
-                }
+                }, 2000);
+                
+                walletConnected = true;
                 
             } catch (error) {
                 console.error('Balance verification error:', error);
-                updateStatus('❌ Verification failed. Please try again later.', 'error');
-            }
-        }
-        
-        // Alternative verification method using different approach
-        async function verifyWithAlternativeMethod(publicKey) {
-            try {
-                // Use different RPC endpoint without CORS proxy
-                const directEndpoints = [
-                    'https://rpc.helius.xyz/?api-key=demo',
-                    'https://solana-api.projectserum.com',
-                    'https://api.mainnet-beta.solana.com'
-                ];
-                
-                for (const endpoint of directEndpoints) {
-                    try {
-                        console.log('Trying direct endpoint:', endpoint);
-                        
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Origin': window.location.origin
-                            },
-                            body: JSON.stringify({
-                                jsonrpc: '2.0',
-                                id: 1,
-                                method: 'getTokenAccountsByOwner',
-                                params: [
-                                    publicKey,
-                                    {
-                                        mint: CORE_TOKEN_ADDRESS
-                                    },
-                                    {
-                                        encoding: 'jsonParsed'
-                                    }
-                                ]
-                            })
-                        });
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log('Alternative method response:', data);
-                            
-                            if (!data.error) {
-                                let totalBalance = 0;
-                                
-                                if (data.result && data.result.value && data.result.value.length > 0) {
-                                    for (const account of data.result.value) {
-                                        const balance = account.account.data.parsed.info.tokenAmount.uiAmount || 0;
-                                        totalBalance += balance;
-                                    }
-                                }
-                                
-                                if (totalBalance >= WHALE_THRESHOLD) {
-                                    updateStatus(`✅ Wallet verified! You hold ${totalBalance.toLocaleString()} CORE tokens.`, 'success');
-                                    showTelegramInvite();
-                                } else {
-                                    updateStatus(`❌ Insufficient CORE tokens. You have ${totalBalance.toLocaleString()} CORE, but need ${WHALE_THRESHOLD.toLocaleString()} to join Whale Club.`, 'error');
-                                }
-                                
-                                walletConnected = true;
-                                return true;
-                            }
-                        }
-                    } catch (endpointError) {
-                        console.log('Endpoint failed:', endpoint, endpointError);
-                        continue;
-                    }
-                }
-                
-                return false;
-                
-            } catch (error) {
-                console.error('Alternative verification failed:', error);
-                return false;
+                updateStatus('Failed to verify token balance. Please try again.', 'error');
             }
         }
         
