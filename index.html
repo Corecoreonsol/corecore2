@@ -1480,7 +1480,7 @@
             overflow: hidden;
             transition: all 0.4s ease;
         }
-        
+
         .wallet-status::before {
             content: '';
             position: absolute;
@@ -1491,31 +1491,31 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
             transition: left 0.5s ease;
         }
-        
+
         .wallet-status:hover::before {
             left: 100%;
         }
-        
+
         .status-text {
             font-size: clamp(0.9rem, 2.5vw, 1rem);
             color: rgba(255, 255, 255, 0.8);
             margin: 0;
             font-weight: 300;
         }
-        
+
         .wallet-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .wallet-btn {
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: #ffffff;
             padding: 1rem 1.5rem;
-            border-radius: 12px;
+            border-radius: 0;
             cursor: none;
             font-size: clamp(0.85rem, 2vw, 0.95rem);
             font-weight: 300;
@@ -1525,59 +1525,57 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.08),
+                       0 4px 16px rgba(0, 255, 255, 0.05),
+                       inset 0 1px 0 rgba(0, 153, 255, 0.1);
         }
-        
+
         .wallet-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             border: none;
             transform: translateY(-1px);
         }
-        
-        .wallet-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
+
         .btn-icon {
             font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
         .telegram-invite {
             background: rgba(34, 197, 94, 0.1);
             border: none;
-            border-radius: 12px;
             padding: 1.5rem;
             text-align: center;
         }
-        
+
         .invite-text {
             font-size: clamp(0.9rem, 2.5vw, 1rem);
             color: rgba(34, 197, 94, 0.9);
             margin: 0 0 1rem 0;
             font-weight: 400;
         }
-        
+
         .telegram-btn {
+            display: inline-block;
             background: rgba(34, 197, 94, 0.2);
             border: none;
             color: #ffffff;
             padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            border-radius: 0;
             cursor: none;
             font-size: 0.9rem;
             font-weight: 400;
             transition: all 0.3s ease;
             letter-spacing: 0.05em;
+            text-decoration: none;
         }
-        
+
         .telegram-btn:hover {
             background: rgba(34, 197, 94, 0.3);
             border: none;
             transform: translateY(-1px);
         }
-        
+
         /* Responsive Whale Club */
         @media (max-width: 768px) {
             .whale-section {
@@ -1595,11 +1593,6 @@
             
             .whale-info-text {
                 text-align: center;
-            }
-            
-            .wallet-buttons {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
             }
         }
         
@@ -3251,30 +3244,25 @@
                 </div>
                 
                 <p class="whale-description">
-                    Connect your wallet to verify your holdings and gain access to our exclusive Whale Chat
+                    Exclusive community for holders of 10,000,000+ CORE tokens
                 </p>
-                
+
                 <div class="wallet-status" id="walletStatus">
                     <p class="status-text">Connect your wallet to verify holdings</p>
                 </div>
-                
+
                 <div class="wallet-buttons">
-                    <button class="wallet-btn phantom-btn" onclick="connectPhantom()">
+                    <button class="wallet-btn phantom-btn" id="phantomConnectBtn">
                         <span class="btn-icon">◇</span>
                         Connect Phantom
                     </button>
-                    
-                    <button class="wallet-btn solflare-btn" onclick="connectSolflare()">
-                        <span class="btn-icon">◈</span>
-                        Connect Solflare
-                    </button>
                 </div>
-                
+
                 <div class="telegram-invite" id="telegramInvite" style="display: none;">
                     <p class="invite-text">◆ Congratulations! You qualify for Whale Club</p>
-                    <button class="telegram-btn" onclick="joinTelegram()">
+                    <a class="telegram-btn" id="telegramJoinBtn" href="https://t.me/CoreWhaleClub" target="_blank" rel="noopener noreferrer">
                         Join Whale Chat
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -4382,132 +4370,108 @@
             }, 2000);
         }
         
-        // Whale Club Wallet Verification
-        let walletConnected = false;
-        const CORE_TOKEN_ADDRESS = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
-        const WHALE_THRESHOLD = 10000000; // 10M CORE tokens
-        
-        async function connectPhantom() {
-            try {
-                if (!window.solana || !window.solana.isPhantom) {
-                    updateStatus('Phantom wallet not detected. Please install Phantom wallet.', 'error');
-                    return;
+        // Whale Club Wallet Verification (frontend-only)
+        (function initWhaleVerification(){
+            const CORE_TOKEN_MINT = '4FdojUmXeaFMBG6yUaoufAC5Bz7u9AwnSAMizkx5pump';
+            const WHALE_THRESHOLD = 10_000_000; // 10M CORE
+            const RPC_ENDPOINT = 'https://api.mainnet-beta.solana.com';
+
+            const connectBtn = document.getElementById('phantomConnectBtn');
+            const statusEl = document.getElementById('walletStatus');
+            const statusText = statusEl ? statusEl.querySelector('.status-text') : null;
+            const inviteBox = document.getElementById('telegramInvite');
+
+            function setStatus(message, type){
+                if (!statusEl || !statusText) return;
+                statusText.textContent = message;
+                // base
+                statusEl.style.background = 'rgba(0,0,0,0.15)';
+                statusEl.style.borderColor = 'rgba(255,255,255,0.1)';
+                statusText.style.color = 'rgba(255,255,255,0.8)';
+                if(type==='success'){
+                    statusEl.style.background = 'rgba(34, 197, 94, 0.1)';
+                    statusEl.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                    statusText.style.color = 'rgba(34, 197, 94, 0.9)';
+                } else if(type==='error'){
+                    statusEl.style.background = 'rgba(239, 68, 68, 0.1)';
+                    statusEl.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                    statusText.style.color = 'rgba(239, 68, 68, 0.9)';
+                } else if(type==='loading'){
+                    statusEl.style.background = 'rgba(59, 130, 246, 0.1)';
+                    statusEl.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+                    statusText.style.color = 'rgba(59, 130, 246, 0.9)';
                 }
-                
-                updateStatus('Connecting to Phantom...', 'loading');
-                
-                const response = await window.solana.connect();
-                const publicKey = response.publicKey.toString();
-                
-                await verifyTokenBalance(publicKey, 'Phantom');
-                
-            } catch (error) {
-                console.error('Phantom connection error:', error);
-                updateStatus('Failed to connect to Phantom wallet.', 'error');
             }
-        }
-        
-        async function connectSolflare() {
-            try {
-                if (!window.solflare || !window.solflare.isSolflare) {
-                    updateStatus('Solflare wallet not detected. Please install Solflare wallet.', 'error');
-                    return;
-                }
-                
-                updateStatus('Connecting to Solflare...', 'loading');
-                
-                const response = await window.solflare.connect();
-                const publicKey = response.publicKey.toString();
-                
-                await verifyTokenBalance(publicKey, 'Solflare');
-                
-            } catch (error) {
-                console.error('Solflare connection error:', error);
-                updateStatus('Failed to connect to Solflare wallet.', 'error');
-            }
-        }
-        
-        async function verifyTokenBalance(publicKey, walletName) {
-            try {
-                updateStatus('Verifying CORE token balance...', 'loading');
-                
-                // Note: This is a mock verification for demo purposes
-                // In production, you would need to:
-                // 1. Query Solana RPC for token accounts
-                // 2. Check CORE token balance using the contract address
-                // 3. Verify the balance meets the whale threshold
-                
-                // Mock verification (remove in production)
-                setTimeout(() => {
-                    // Simulate random verification result for demo
-                    const isWhale = Math.random() > 0.5; // 50% chance for demo
-                    
-                    if (isWhale) {
-                        updateStatus(`✅ Wallet verified! You hold ${WHALE_THRESHOLD.toLocaleString()}+ CORE tokens.`, 'success');
-                        showTelegramInvite();
-                    } else {
-                        updateStatus(`❌ Insufficient CORE tokens. You need ${WHALE_THRESHOLD.toLocaleString()} CORE to join Whale Club.`, 'error');
+
+            async function getCoreTokenBalance(ownerPubkey){
+                // Use getParsedTokenAccountsByOwner to fetch SPL token accounts and parse CORE mint
+                const body = {
+                    jsonrpc: '2.0',
+                    id: 1,
+                    method: 'getParsedTokenAccountsByOwner',
+                    params: [
+                        ownerPubkey,
+                        { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+                        { commitment: 'confirmed' }
+                    ]
+                };
+                const res = await fetch(RPC_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const json = await res.json();
+                if(!json.result || !json.result.value) return 0;
+
+                let balance = 0;
+                for(const acc of json.result.value){
+                    const info = acc.account?.data?.parsed?.info;
+                    const mint = info?.mint;
+                    if(mint === CORE_TOKEN_MINT){
+                        const uiAmount = info?.tokenAmount?.uiAmount || 0;
+                        balance += uiAmount;
                     }
-                }, 2000);
-                
-                walletConnected = true;
-                
-            } catch (error) {
-                console.error('Balance verification error:', error);
-                updateStatus('Failed to verify token balance. Please try again.', 'error');
+                }
+                return balance;
             }
-        }
-        
-        function updateStatus(message, type) {
-            const statusElement = document.getElementById('walletStatus');
-            const statusText = statusElement.querySelector('.status-text');
-            
-            statusText.textContent = message;
-            
-            // Reset classes
-            statusElement.className = 'wallet-status';
-            
-            // Add type-specific styling
-            if (type === 'success') {
-                statusElement.style.background = 'rgba(34, 197, 94, 0.1)';
-                statusElement.style.borderColor = 'rgba(34, 197, 94, 0.3)';
-                statusText.style.color = 'rgba(34, 197, 94, 0.9)';
-            } else if (type === 'error') {
-                statusElement.style.background = 'rgba(239, 68, 68, 0.1)';
-                statusElement.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-                statusText.style.color = 'rgba(239, 68, 68, 0.9)';
-            } else if (type === 'loading') {
-                statusElement.style.background = 'rgba(59, 130, 246, 0.1)';
-                statusElement.style.borderColor = 'rgba(59, 130, 246, 0.3)';
-                statusText.style.color = 'rgba(59, 130, 246, 0.9)';
-            } else {
-                statusElement.style.background = 'rgba(0, 0, 0, 0.15)';
-                statusElement.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                statusText.style.color = 'rgba(255, 255, 255, 0.8)';
+
+            async function onConnectPhantom(){
+                try{
+                    const provider = window.solana;
+                    if(!provider || !provider.isPhantom){
+                        setStatus('Phantom wallet not detected. Please install Phantom.', 'error');
+                        return;
+                    }
+                    setStatus('Connecting to Phantom...', 'loading');
+                    const resp = await provider.connect();
+                    const pubkey = resp.publicKey?.toString();
+                    if(!pubkey){
+                        setStatus('Failed to read wallet public key.', 'error');
+                        return;
+                    }
+                    setStatus('Verifying CORE token balance...', 'loading');
+                    const bal = await getCoreTokenBalance(pubkey);
+                    if (bal >= WHALE_THRESHOLD){
+                        setStatus(`✅ Wallet verified! You hold ${Math.floor(bal).toLocaleString()} CORE.`, 'success');
+                        if(inviteBox){ inviteBox.style.display = 'block'; }
+                    } else {
+                        const short = Math.floor(bal).toLocaleString();
+                        const need = Math.max(0, Math.ceil(WHALE_THRESHOLD - bal)).toLocaleString();
+                        setStatus(`❌ You hold ${short} CORE. You need ${need} more CORE to join Whale Club.`, 'error');
+                        if(inviteBox){ inviteBox.style.display = 'none'; }
+                    }
+                }catch(err){
+                    console.error('Phantom connect error', err);
+                    setStatus('Failed to connect or verify. Please try again.', 'error');
+                    if(inviteBox){ inviteBox.style.display = 'none'; }
+                }
             }
-        }
-        
-        function showTelegramInvite() {
-            const inviteElement = document.getElementById('telegramInvite');
-            inviteElement.style.display = 'block';
-            
-            // Add fade-in animation
-            inviteElement.style.opacity = '0';
-            inviteElement.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                inviteElement.style.transition = 'all 0.5s ease';
-                inviteElement.style.opacity = '1';
-                inviteElement.style.transform = 'translateY(0)';
-            }, 100);
-        }
-        
-        function joinTelegram() {
-            // In production, this would be the actual Whale Chat Telegram invite link
-            const telegramLink = 'https://t.me/CoreWhaleClub'; // Replace with actual link
-            window.open(telegramLink, '_blank');
-        }
-        
+
+            if(connectBtn){
+                connectBtn.addEventListener('click', onConnectPhantom);
+            }
+        })();
+
         // Art Gallery System
         class ArtGallery {
             constructor() {
